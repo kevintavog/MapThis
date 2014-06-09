@@ -52,7 +52,7 @@ namespace MapThis.View
 #endregion
 
 		public MapWebView MapWebView { get { return (MapWebView) webView; } }
-		public new MainWindow Window { get { return (MainWindow)base.Window; } }
+		public new MainWindow Window { get { return (MainWindow) base.Window; } }
 
 
 		public override void AwakeFromNib()
@@ -61,7 +61,11 @@ namespace MapThis.View
 
 			InitializeImageFilters();
 			MapWebView.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(NSBundle.MainBundle.PathForResource("map", "html"))));
-			searchField.Delegate = new TextFieldDelegate(this);
+			searchField.Delegate = new SearchTextFieldDelegate(this);
+			keywordEntry.Delegate = new KeywordsTextFieldDelegate(this);
+			Window.Delegate = new MainWindowDelegate(this);
+			tabSplitView.Delegate = new SplitViewDelegate(this);
+
 
 //			imageView.SetValueForKey(NSColor.ControlDarkShadow, IKImageBrowserView.BackgroundColorKey);
 
@@ -81,10 +85,10 @@ namespace MapThis.View
 			var lat = 47.6220;
 			var lon = -122.335;
 			MapWebView.InvokeMapScript("setCenter([{0}, {1}], 12)", lat, lon);
+			SetTableColumns();
 		}
 
 		private void SetStatusText(string message, params object[] args)
-
 		{
 			statusLabel.StringValue = String.Format(message, args);
 		}
@@ -105,8 +109,52 @@ namespace MapThis.View
 				() => BeginInvokeOnMainThread( delegate 
 				{ 
 					SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
-				})
-				));
+				})));
+		}
+
+		private void ImageFilesSelected(IList<string> selectedFiles)
+		{
+			KeywordFilesChanged(selectedFiles);
+		}
+
+		private void WindowDidResize()
+		{
+			SetTableColumns();
+		}
+
+		private void SplitViewDidResize(NSSplitView splitView)
+		{
+			SetTableColumns();
+		}
+
+		private class SplitViewDelegate : NSSplitViewDelegate
+		{
+			MainWindowController controller;
+
+			public SplitViewDelegate(MainWindowController controller)
+			{
+				this.controller = controller;
+			}
+
+			public override void DidResizeSubviews(NSNotification notification)
+			{
+				controller.SplitViewDidResize(notification.Object as NSSplitView);
+			}
+		}
+
+		private class MainWindowDelegate : NSWindowDelegate
+		{
+			MainWindowController controller;
+
+			public MainWindowDelegate(MainWindowController controller)
+			{
+				this.controller = controller;
+			}
+
+			public override void DidResize(NSNotification notification)
+			{
+				controller.WindowDidResize();
+			}
 		}
 	}
 }

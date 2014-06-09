@@ -53,11 +53,11 @@ namespace MapThis.View
 			}
 		}
 
-		private class TextFieldDelegate : NSTextFieldDelegate
+		private class SearchTextFieldDelegate : NSTextFieldDelegate
 		{
 			MainWindowController controller;
 
-			public TextFieldDelegate(MainWindowController controller)
+			public SearchTextFieldDelegate(MainWindowController controller)
 			{
 				this.controller = controller;
 			}
@@ -89,4 +89,3 @@ namespace MapThis.View
 		}
 	}
 }
-

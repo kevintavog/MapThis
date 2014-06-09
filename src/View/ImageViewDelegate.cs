@@ -2,6 +2,8 @@
 using MonoMac.ImageKit;
 using MonoMac.Foundation;
 using System.IO;
+using System.Collections.Generic;
+using MonoMac.AppKit;
 
 namespace MapThis.View
 {
@@ -49,6 +51,16 @@ namespace MapThis.View
 			{
 				SetStatusText("");
 			}
+
+			var selectedFiles = new List<string>();
+			if (view.SelectionIndexes.Count > 0)
+			{
+				foreach (var index in view.SelectionIndexes.ToArray())
+				{
+					selectedFiles.Add(ImageAtIndex(index).File);
+				}
+			}
+			ImageFilesSelected(selectedFiles);
 		}
 
 		private ImageViewItem ImageAtIndex(uint index)

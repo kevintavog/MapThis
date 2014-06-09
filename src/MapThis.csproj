@@ -27,6 +27,9 @@
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <EnableCodeSigning>false</EnableCodeSigning>
     <CreatePackage>false</CreatePackage>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <I18n>
+    </I18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -113,6 +116,10 @@
     <Compile Include="View\TableDelegate.cs" />
     <Compile Include="View\ImageViewFIlterDelegate.cs" />
     <Compile Include="View\SearchDelegates.cs" />
+    <Compile Include="Controllers\FileKeywords.cs" />
+    <Compile Include="Utilities\ExifToolInvoker.cs" />
+    <Compile Include="View\MenuHandlers.cs" />
+    <Compile Include="Controllers\KeywordSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\MainMenu.xib" />
@@ -124,9 +131,11 @@
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="MapThis.icns" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <BundleResource Include="Resources\map.html" />
+    <BundleResource Include="Resources\MapThis.icns" />
   </ItemGroup>
 </Project>

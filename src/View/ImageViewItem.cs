@@ -37,7 +37,9 @@ namespace MapThis.View
 					Location = ImageDetails.GetLocation(File);
 					if (Location != null)
 					{
-						_gpsCoordinates = string.Format("{0}, {1}", Location.Latitude, Location.Longitude);
+						char latNS = Location.Latitude < 0 ? 'S' : 'N';
+						char longEW = Location.Longitude < 0 ? 'W' : 'E';
+						_gpsCoordinates = String.Format("{0} {1}, {2} {3}", ToDms(Location.Latitude), latNS, ToDms(Location.Longitude), longEW);
 					}
 					else
 					{
@@ -47,6 +49,19 @@ namespace MapThis.View
 
 				return _gpsCoordinates == "" ? null : _gpsCoordinates;
 			}
+		}
+
+		private string ToDms(double l)
+		{
+			if (l < 0)
+			{
+				l *= -1f;
+			}
+			var degrees = Math.Truncate(l);
+			var minutes = (l - degrees) * 60f;
+			var seconds = (minutes - (int) minutes) * 60;
+			minutes = Math.Truncate(minutes);
+			return String.Format("{0:00}° {1:00}' {2:00}\"", degrees, minutes, seconds);
 		}
 	}
 }
