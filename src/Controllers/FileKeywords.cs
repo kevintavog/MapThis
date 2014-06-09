@@ -74,7 +74,7 @@ namespace MapThis
 			}
 		}
 
-		public void Load()
+		public string Load()
 		{
 			try
 			{
@@ -123,13 +123,17 @@ namespace MapThis
 					fileToKeywords[filename] = keywordList;
 				}
 
-				GenerateCommonKeywords();
-				CacheAllKeywords();
+				return null;
 			}
 			catch (Exception e)
 			{
 				logger.Error("Error getting keywords: {0}", e);
-				throw;
+				return e.Message;
+			}
+			finally
+			{
+				GenerateCommonKeywords();
+				CacheAllKeywords();
 			}
 		}
 

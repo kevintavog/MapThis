@@ -120,7 +120,8 @@ namespace MapThis.View
 				string error = fileKeywords.Save();
 				if (error != null)
 				{
-					NSAlert.WithMessage(error, "Close", "", "", "").RunSheetModal(Window);
+					var message = String.Format("Error saving keywords: {0}", error);
+					NSAlert.WithMessage(message, "Close", "", "", "").RunSheetModal(Window);
 				}
 			}
 
@@ -131,7 +132,12 @@ namespace MapThis.View
 			else
 			{
 				var keywordLoader = new FileKeywords(selectedFiles);
-				keywordLoader.Load();
+				var error = keywordLoader.Load();
+				if (error != null)
+				{
+					var message = String.Format("Error loading keywords: {0}", error);
+					NSAlert.WithMessage(message, "Close", "", "", "").RunSheetModal(Window);
+				}
 				fileKeywords = keywordLoader;
 			}
 

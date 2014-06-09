@@ -27,5 +27,16 @@ namespace MapThis.View
 			mainWindowController = new MainWindowController();
 			mainWindowController.Window.MakeKeyAndOrderFront(this);
 		}
+
+		public override bool OpenFile(NSApplication sender, string filename)
+		{
+			if (mainWindowController == null)
+			{
+				mainWindowController = new MainWindowController();
+				mainWindowController.Window.MakeKeyAndOrderFront(this);
+			}
+
+			return mainWindowController.OpenFolderDirectly(filename);
+		}
 	}
 }

@@ -38,14 +38,21 @@ namespace MapThis.View
 				return;
 			}
 
-			directoryTree = new DirectoryTree(openPanel.Url.Path);
-			directoryView.ReloadData();
+			OpenFolderDirectly(openPanel.Url.Path);
+		}
 
-			Preferences.Instance.LastOpenedFolder = openPanel.Url.Path;
+		public bool OpenFolderDirectly(string path)
+		{
+			directoryTree = new DirectoryTree(path);
+			directoryView.ReloadData();
+			directoryView.SelectRow(0, false);
+
+			Preferences.Instance.LastOpenedFolder = path;
 			Preferences.Instance.Save();
 
 			// That's gross - Mono exposes SharedDocumentController as NSObject rather than NSDocumentcontroller
-			(NSDocumentController.SharedDocumentController as NSDocumentController).NoteNewRecentDocumentURL(openPanel.Url);
+			(NSDocumentController.SharedDocumentController as NSDocumentController).NoteNewRecentDocumentURL(new NSUrl(path, true));
+			return true;
 		}
 
 	}
