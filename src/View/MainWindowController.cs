@@ -45,8 +45,6 @@ namespace MapThis.View
 		{
 			locationSearch = new LocationSearch( (r) => BeginInvokeOnMainThread(delegate { SearchComplete(r); } ));
 			mapController = new MapController( (s,a) => { MapWebView.InvokeMapScript(s,a); } );
-//			directoryTree = new DirectoryTree("/Users/goatboy/Pictures/Master");
-			directoryTree = new DirectoryTree("/Users/goatboy/Pictures/To Server/");
 		}
 
 #endregion
@@ -66,6 +64,44 @@ namespace MapThis.View
 			Window.Delegate = new MainWindowDelegate(this);
 			tabSplitView.Delegate = new SplitViewDelegate(this);
 
+
+			imageFilterSelector.SelectItem(Preferences.Instance.ImageFilterIndex);
+			imageTypes = imageFilters[Preferences.Instance.ImageFilterIndex].Types;
+
+			if (Preferences.Instance.LastOpenedFolder != null)
+			{
+				directoryTree = new DirectoryTree(Preferences.Instance.LastOpenedFolder);
+			}
+			else
+			{
+				var urlList = new NSFileManager().GetUrls(NSSearchPathDirectory.PicturesDirectory, NSSearchPathDomain.User);
+				directoryTree = new DirectoryTree(urlList[0].Path);
+			}
+
+			var selectedPath = Preferences.Instance.LastSelectedFolder;
+			if (!String.IsNullOrEmpty(selectedPath))
+			{
+				int bestRow = -1;
+				for (int row = 0; row < directoryView.RowCount; ++row)
+				{
+					var dt = directoryView.ItemAtRow(row) as DirectoryTree;
+					if (dt.Path == selectedPath)
+					{
+						bestRow = row;
+						break;
+					}
+
+					if (selectedPath.StartsWith(dt.Path))
+					{
+						bestRow = row;
+					}
+				}
+
+				if (bestRow >= 0)
+				{
+					directoryView.SelectRow(bestRow, false);
+				}
+			}
 
 //			imageView.SetValueForKey(NSColor.ControlDarkShadow, IKImageBrowserView.BackgroundColorKey);
 

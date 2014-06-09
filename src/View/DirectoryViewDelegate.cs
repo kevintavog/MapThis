@@ -10,7 +10,7 @@ namespace MapThis.View
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
-		static private HashSet<string> imageTypes = new HashSet<string>() { "public.jpeg" };
+		static private HashSet<string> imageTypes = new HashSet<string>();
 
 		private void ChangeFileTypes(HashSet<string> newTypes)
 		{
@@ -22,6 +22,9 @@ namespace MapThis.View
 		{
 			var tree = ToTree(directoryView.ItemAtRow(directoryView.SelectedRow));
 			logger.Info("Selection changed: {0}", tree.Path);
+			Preferences.Instance.LastSelectedFolder = tree.Path;
+			Preferences.Instance.Save();
+
 			imageViewItems.Clear();
 			foreach (var f in tree.Files)
 			{

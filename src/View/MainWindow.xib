@@ -61,7 +61,7 @@
                                                             <rect key="frame" x="1" y="1" width="348" height="308.5"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" indentationPerLevel="16" outlineTableColumn="50j-f5-CFc" id="Ay1-Tv-qzM">
+                                                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" indentationPerLevel="16" autosaveExpandedItems="YES" outlineTableColumn="50j-f5-CFc" id="Ay1-Tv-qzM">
                                                                     <rect key="frame" x="0.0" y="0.0" width="348" height="308.5"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -135,7 +135,7 @@
                                                         </scroller>
                                                     </scrollView>
                                                     <slider verticalHuggingPriority="750" id="8nR-Ib-JI1">
-                                                        <rect key="frame" x="216.99999991129147" y="299" width="132" height="25"/>
+                                                        <rect key="frame" x="216.99999982181595" y="299" width="132" height="25"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.20000000000000001" maxValue="2" doubleValue="0.54000000000000004" tickMarkPosition="above" numberOfTickMarks="11" sliderType="linear" id="Oaf-hb-qJH"/>
                                                         <connections>

@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using Newtonsoft.Json;
+using NLog;
 
 namespace MapThis
 {
 	public class KeywordSet
 	{
-		private OrderedDictionary keywords = new OrderedDictionary 
-		{ 
-			{ "art", null },
-			{ "dog", null },
-			{ "fountain", null },
-			{ "landscape", null },
-			{ "macro", null }, 
-			{ "mountain biking", null },
-			{ "mural", null },
-			{ "night", null },
-			{ "Seattle", null },
-			{ "sunset", null },
-			{ "Troy", null },
-		};
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private SortedSet<string> keywords = new SortedSet<string>();
 
 		public IList<string> AsList { get; private set; }
 		public bool Contains(string word)
@@ -29,6 +21,15 @@ namespace MapThis
 
 		public KeywordSet()
 		{
+			if (File.Exists(Preferences.Instance.KeywordFile))
+			{
+				var json = JArray.Parse(File.ReadAllText(Preferences.Instance.KeywordFile));
+				foreach (var item in json)
+				{
+					keywords.Add(item.ToString());
+				}
+			}
+
 			UpdateCachedList();
 		}
 
@@ -36,8 +37,9 @@ namespace MapThis
 		{
 			if (!keywords.Contains(word))
 			{
-				keywords[word] = true;
+				keywords.Add(word);
 				UpdateCachedList();
+				SaveKeywords();
 				return true;
 			}
 
@@ -50,20 +52,28 @@ namespace MapThis
 			{
 				keywords.Remove(word);
 				UpdateCachedList();
+				SaveKeywords();
 				return true;
 			}
 
 			return false;
 		}
 
+		private void SaveKeywords()
+		{
+			try
+			{
+				File.WriteAllText(Preferences.Instance.KeywordFile, JsonConvert.SerializeObject(new List<string>(keywords)));
+			}
+			catch (Exception e)
+			{
+				logger.Info("Error saving keywords: {0}", e);
+			}
+		}
+
 		private void UpdateCachedList()
 		{
-			var list = new List<string>();
-			foreach (var keyword in keywords.Keys)
-			{
-				list.Add(keyword.ToString());
-			}
-			AsList = list.AsReadOnly();
+			AsList = new List<string>(keywords);
 		}
 	}
 }

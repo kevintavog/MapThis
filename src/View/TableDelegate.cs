@@ -227,6 +227,11 @@ namespace MapThis.View
 
 		partial void AllKeywordClick(NSObject sender)
 		{
+			if (fileKeywords == null)
+			{
+				return;
+			}
+
 			int row = allKeywords.ClickedRow;
 			int col = allKeywords.ClickedColumn;
 			int listIndex = allKeywords.TableColumns().Count() * row + col;
@@ -305,21 +310,7 @@ namespace MapThis.View
 
 		private void AddedItemToTableView(NSTableView tableView, IList<string> dataList)
 		{
-			int listCount = dataList.Count - 1;
-			int row = listCount / tableView.ColumnCount;
-			int col = listCount % tableView.ColumnCount;
-
-			int tableRowCount = RowCountForList(tableView, listCount + 1);
-			if (tableRowCount != tableView.RowCount)
-			{
-				tableView.BeginUpdates();
-				tableView.InsertRows(new NSIndexSet(row), NSTableViewAnimation.None);
-				tableView.EndUpdates();
-			}
-			else
-			{
-				tableView.ReloadData(new NSIndexSet(row), new NSIndexSet(col));
-			}
+			tableView.ReloadData();
 		}
 
 		private class KeywordsTextFieldDelegate : NSTextFieldDelegate

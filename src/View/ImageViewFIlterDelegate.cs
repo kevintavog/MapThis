@@ -10,7 +10,7 @@ namespace MapThis.View
 	{
 		private ImageFilter[] imageFilters = new []
 		{
-			new ImageFilter("JPEG", new HashSet<string>() { "public.jpeg" }),
+			new ImageFilter("JPEG & PNG", new HashSet<string>() { "public.jpeg", "public.png" }),
 			new ImageFilter("All images", new HashSet<string>(CGImageSource.TypeIdentifiers))
 		};
 
@@ -26,6 +26,9 @@ namespace MapThis.View
 		partial void fileType(NSObject sender)
 		{
 			ChangeFileTypes(imageFilters[imageFilterSelector.IndexOfSelectedItem].Types);
+
+			Preferences.Instance.ImageFilterIndex = imageFilterSelector.IndexOfSelectedItem;
+			Preferences.Instance.Save();
 		}
 
 		partial void imageSize(NSObject sender)
@@ -46,4 +49,3 @@ namespace MapThis.View
 		public HashSet<string> Types { get; private set; }
 	}
 }
-

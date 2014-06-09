@@ -120,6 +120,7 @@
     <Compile Include="Utilities\ExifToolInvoker.cs" />
     <Compile Include="View\MenuHandlers.cs" />
     <Compile Include="Controllers\KeywordSet.cs" />
+    <Compile Include="Models\Preferences.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\MainMenu.xib" />
