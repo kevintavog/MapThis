@@ -68,13 +68,13 @@
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
-                                                                        <tableColumn width="345" minWidth="16" maxWidth="1000" id="50j-f5-CFc">
+                                                                        <tableColumn editable="NO" width="345" minWidth="16" maxWidth="1000" id="50j-f5-CFc">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                 <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                             </tableHeaderCell>
-                                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="K7L-ti-5GR">
+                                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="K7L-ti-5GR">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -135,7 +135,7 @@
                                                         </scroller>
                                                     </scrollView>
                                                     <slider verticalHuggingPriority="750" id="8nR-Ib-JI1">
-                                                        <rect key="frame" x="216.99999982181595" y="299" width="132" height="25"/>
+                                                        <rect key="frame" x="217" y="299" width="132" height="25"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.20000000000000001" maxValue="2" doubleValue="0.54000000000000004" tickMarkPosition="above" numberOfTickMarks="11" sliderType="linear" id="Oaf-hb-qJH"/>
                                                         <connections>

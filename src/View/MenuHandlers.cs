@@ -41,6 +41,19 @@ namespace MapThis.View
 			OpenFolderDirectly(openPanel.Url.Path);
 		}
 
+		[Export("viewFile:")]
+		public void ViewFile(NSObject sender)
+		{
+			if (imageView.SelectionIndexes.Count >= 1)
+			{
+				var item = ImageAtIndex(imageView.SelectionIndexes.FirstIndex);
+				if (false == NSWorkspace.SharedWorkspace.OpenFile(item.File))
+				{
+					logger.Error("Unable to open '{0}'", item.File);
+				}
+			}
+		}
+
 		public bool OpenFolderDirectly(string path)
 		{
 			directoryTree = new DirectoryTree(path);

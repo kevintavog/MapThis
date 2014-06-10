@@ -82,6 +82,12 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="YiJ-9X-fgs"/>
+                            <menuItem title="View…" keyEquivalent="v" id="y9V-sD-Iqe">
+                                <connections>
+                                    <action selector="viewFile:" target="-1" id="GUz-Fx-OXt"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
