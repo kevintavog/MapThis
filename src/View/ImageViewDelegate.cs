@@ -4,6 +4,7 @@ using MonoMac.Foundation;
 using System.IO;
 using System.Collections.Generic;
 using MonoMac.AppKit;
+using System.Drawing;
 
 namespace MapThis.View
 {
@@ -56,7 +57,7 @@ namespace MapThis.View
 			{
 				var item = ImageAtIndex(view.SelectionIndexes.FirstIndex);
 				var gps = item.HasGps ? item.GpsCoordinates : "No GPS";
-				SetStatusText("{0}    {1}", Path.GetFileName(item.File), gps);
+				SetStatusText("{0}    {1}     {2}", Path.GetFileName(item.File), gps, item.Keywords);
 			}
 			else if (view.SelectionIndexes.Count > 1)
 			{
@@ -78,9 +79,38 @@ namespace MapThis.View
 			ImageFilesSelected(selectedFiles);
 		}
 
+		[Export("view:stringForToolTip:point:userData:")]
+		public NSString ViewStringForToolTip(NSView view, NSObject tooltipTag, PointF point, IntPtr data)
+		{
+			int index = data.ToInt32();
+			if (index >= 0 && index < imageViewItems.Count)
+			{
+				return (NSString) imageViewItems[index].Keywords;
+			}
+
+			logger.Info("Nothing for {0}", index);
+			return null;
+		}
+
 		private ImageViewItem ImageAtIndex(uint index)
 		{
 			return imageViewItems[(int) index];
+		}
+
+		private void UpdateImageViewZoom()
+		{
+			imageView.ZoomValue = imageSizeSlider.FloatValue;
+			ConfigureImageViewTooltips();
+		}
+
+		private void ConfigureImageViewTooltips()
+		{
+			imageView.RemoveAllToolTips();
+			for (int idx = 0; idx < imageViewItems.Count; ++idx)
+			{
+				var rect = imageView.GetItemFrame(idx);
+				imageView.AddToolTip(rect, this, new IntPtr(idx));
+			}
 		}
 	}
 }

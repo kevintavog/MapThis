@@ -115,7 +115,7 @@ namespace MapThis.View
 		{
 			// HACK: It seems setting this in AwakeFromNib is the right place, but it ends up with 0.5
 			// rather than the default value (0.75). I don't know...
-			imageView.ZoomValue = imageSizeSlider.FloatValue;
+			UpdateImageViewZoom();
 			MapWebView.WindowScriptObject.SetValueForKey(this, new NSString("MapThis"));
 		}
 

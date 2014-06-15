@@ -39,6 +39,7 @@ namespace MapThis.View
 			}
 
 			imageView.ReloadData();
+			ConfigureImageViewTooltips();
 		}
 
 		[Export("outlineViewSelectionDidChange:")]

@@ -33,7 +33,7 @@ namespace MapThis.View
 
 		partial void imageSize(NSObject sender)
 		{
-			imageView.ZoomValue = imageSizeSlider.FloatValue;
+			UpdateImageViewZoom();
 		}
 	}
 
