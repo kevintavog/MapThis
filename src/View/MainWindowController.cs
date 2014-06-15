@@ -66,6 +66,7 @@ namespace MapThis.View
 			keywordEntry.Changed += delegate(object sender, EventArgs args) { KeywordsTextChanged((NSNotification) sender); };
 			keywordEntry.DoCommandBySelector += KeywordsCommandSelector;
 			keywordEntry.GetCompletions += KeywordsGetCompletions;
+			keywordEntry.EditingEnded += delegate(object sender, EventArgs e) { ApplyKeyword(); };
 
 			imageFilterSelector.SelectItem(Preferences.Instance.ImageFilterIndex);
 			imageTypes = imageFilters[Preferences.Instance.ImageFilterIndex].Types;

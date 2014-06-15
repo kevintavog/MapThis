@@ -13,8 +13,6 @@ namespace MapThis.View
 {
 	public class ImageViewItem : IKImageBrowserItem
 	{
-		static private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
 
