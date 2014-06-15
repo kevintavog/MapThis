@@ -120,11 +120,19 @@ namespace MapThis.View
 		{
 			if (fileKeywords != null)
 			{
-				string error = fileKeywords.Save();
-				if (error != null)
+				string error;
+				if (!fileKeywords.Save(out error))
 				{
-					var message = String.Format("Error saving keywords: {0}", error);
-					NSAlert.WithMessage(message, "Close", "", "", "").RunSheetModal(Window);
+					if (error != null)
+					{
+						var message = String.Format("Error saving keywords: {0}", error);
+						NSAlert.WithMessage(message, "Close", "", "", "").RunSheetModal(Window);
+					}
+				}
+				else
+				{
+					folderKeywordsCache.FilesUpdated(fileKeywords.Filenames);
+					ImageFilesUpdated(fileKeywords.Filenames);
 				}
 			}
 

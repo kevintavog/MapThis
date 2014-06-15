@@ -1,12 +1,12 @@
 ﻿using System;
-using MapThis.Utilities;
-using NLog;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Newtonsoft.Json.Linq;
 using System.Linq;
-using System.Collections;
 using System.Text;
+using NLog;
+using Newtonsoft.Json.Linq;
+using MapThis.Utilities;
 
 namespace MapThis
 {
@@ -144,8 +144,9 @@ namespace MapThis
 			}
 		}
 
-		public string Save()
+		public bool Save(out string message)
 		{
+			message = null;
 			var added = new List<string>();
 			foreach (DictionaryEntry de in allKeywords)
 			{
@@ -157,7 +158,7 @@ namespace MapThis
 
 			if (added.Count == 0 && removedKeywords.Count == 0)
 			{
-				return null;
+				return false;
 			}
 
 			try
@@ -177,12 +178,13 @@ namespace MapThis
 				}
 
 				ExifToolInvoker.Run("-P -overwrite_original {0} {1} {2}", addCommand, removeCommand, quotedFilenames);
-				return null;
+				return true;
 			}
 			catch (Exception e)
 			{
 				logger.Error("Error saving keywords: {0}", e);
-				return e.Message;
+				message = e.Message;
+				return false;
 			}
 		}
 	}

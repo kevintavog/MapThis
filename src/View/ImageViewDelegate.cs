@@ -9,6 +9,21 @@ namespace MapThis.View
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
+		private void ImageFilesUpdated(IEnumerable<string> filenames)
+		{
+			foreach (var imageItem in imageViewItems)
+			{
+				foreach (var f in filenames)
+				{
+					if (f == imageItem.File)
+					{
+						imageItem.UpdateKeywords(folderKeywordsCache.ForFile(imageItem.File));
+						break;
+					}
+				}
+			}
+		}
+
 		[Export("numberOfItemsInImageBrowser:")]
 		public int ImageKitNumberOfItems(IKImageBrowserView view)
 		{

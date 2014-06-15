@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using NLog;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MapThis
 {
@@ -36,52 +37,7 @@ namespace MapThis
 			try
 			{
 				var exifOutput = ExifToolInvoker.Run("-j -G -Subject -Keywords \"{0}\"", folder);
-				if (!String.IsNullOrEmpty(exifOutput.OutputString))
-				{
-					var output = JArray.Parse(exifOutput.OutputString);
-					for (int fileIndex = 0; fileIndex < output.Count; ++fileIndex)
-					{
-						var keywordList = new OrderedDictionary();
-						string filename = null;
-						foreach (var child in output[fileIndex].Children())
-						{
-							var prop = child as JProperty;
-							if (prop != null)
-							{
-								if (prop.Name == "SourceFile")
-								{
-									filename = prop.Value.ToString();
-								}
-								if (!keywordPropertyNames.Contains(prop.Name))
-								{
-									continue;
-								}
-
-								var jarray = prop.Value as JArray;
-								if (jarray != null)
-								{
-									foreach (var item in jarray.Values())
-									{
-										AddKeyword(keywordList, item.ToString());
-									}
-								}
-								else
-								{
-									AddKeyword(keywordList, prop.Value.ToString());
-								}
-							}
-						}
-
-						if (filename == null)
-						{
-							logger.Warn("A filename wasn't returned by ExifTool");
-							continue;
-						}
-
-						fileToKeywords[filename] = keywordList;
-					}
-				}
-
+				ProcessExifOutput(exifOutput);
 				return true;
 			}
 			catch (Exception e)
@@ -90,6 +46,75 @@ namespace MapThis
 			}
 
 			return false;
+		}
+
+		public void FilesUpdated(IEnumerable<string> filenames)
+		{
+			if (filenames == null || filenames.Count() < 1)
+			{
+				return;
+			}
+
+			try
+			{
+				var quotedFilenames = "\"" + String.Join("\" \"", filenames) + "\"";
+				var exifOutput = ExifToolInvoker.Run("-j -G -Subject -Keywords {0}", quotedFilenames);
+				ProcessExifOutput(exifOutput);
+			}
+			catch (Exception e)
+			{
+				logger.Error("Error updating keywords: {0}", e);
+			}
+
+		}
+
+		private void ProcessExifOutput(ExifToolInvoker exifOutput)
+		{
+			if (!String.IsNullOrEmpty(exifOutput.OutputString))
+			{
+				var output = JArray.Parse(exifOutput.OutputString);
+				for (int fileIndex = 0; fileIndex < output.Count; ++fileIndex)
+				{
+					var keywordList = new OrderedDictionary();
+					string filename = null;
+					foreach (var child in output[fileIndex].Children())
+					{
+						var prop = child as JProperty;
+						if (prop != null)
+						{
+							if (prop.Name == "SourceFile")
+							{
+								filename = prop.Value.ToString();
+							}
+							if (!keywordPropertyNames.Contains(prop.Name))
+							{
+								continue;
+							}
+
+							var jarray = prop.Value as JArray;
+							if (jarray != null)
+							{
+								foreach (var item in jarray.Values())
+								{
+									AddKeyword(keywordList, item.ToString());
+								}
+							}
+							else
+							{
+								AddKeyword(keywordList, prop.Value.ToString());
+							}
+						}
+					}
+
+					if (filename == null)
+					{
+						logger.Warn("A filename wasn't returned by ExifTool");
+						continue;
+					}
+
+					fileToKeywords[filename] = keywordList;
+				}
+			}
 		}
 
 		private void AddKeyword(OrderedDictionary dictionary, string keyword)

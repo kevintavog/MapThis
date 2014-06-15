@@ -7,11 +7,14 @@ using MapThis.Utilities;
 using MapThis.Models;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using NLog;
 
 namespace MapThis.View
 {
 	public class ImageViewItem : IKImageBrowserItem
 	{
+		static private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
 
@@ -24,11 +27,18 @@ namespace MapThis.View
 			Url = new NSUrl(File, false);
 		}
 
+		public void UpdateKeywords(OrderedDictionary keywords)
+		{
+			fileKeywords = keywords;
+			_abbreviatedKeywords = null;
+			_keywords = null;
+		}
+
 		public override string ImageUID { get { return Url.Path; } }
 		public override NSString ImageRepresentationType { get { return IKImageBrowserItem.PathRepresentationType; } }
 		public override NSObject ImageRepresentation { get { return Url; } }
-		public override string ImageTitle { get { return String.Format("{0} - {1}", HasGps ? "GPS" : "<>", AbbreviatedKeywords); } }
-		public override string ImageSubtitle { get { return Path.GetFileNameWithoutExtension(File); } }
+		public override string ImageTitle { get { return String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(File), AbbreviatedKeywords); } }
+		public override string ImageSubtitle { get { return HasGps ? GpsCoordinates : "<>"; } }
 
 		public bool HasKeywords { get { return !String.IsNullOrEmpty(Keywords); } }
 		public bool HasGps { get { return !String.IsNullOrEmpty(GpsCoordinates); } }
@@ -74,7 +84,7 @@ namespace MapThis.View
 						_abbreviatedKeywords = fileKeywords.Keys.OfType<string>().First();
 						if (fileKeywords.Count > 1)
 						{
-							_abbreviatedKeywords += ", +" + (fileKeywords.Count - 1);
+							_abbreviatedKeywords += " +" + (fileKeywords.Count - 1);
 						}
 					}
 				}
@@ -96,7 +106,7 @@ namespace MapThis.View
 					}
 					else
 					{
-						_keywords = String.Join(", ", fileKeywords.Keys);
+						_keywords = String.Join(", ", fileKeywords.Keys.OfType<string>());
 					}
 				}
 
