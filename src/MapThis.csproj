@@ -121,6 +121,7 @@
     <Compile Include="View\MenuHandlers.cs" />
     <Compile Include="Controllers\KeywordSet.cs" />
     <Compile Include="Models\Preferences.cs" />
+    <Compile Include="Controllers\FolderKeywordsCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\MainMenu.xib" />

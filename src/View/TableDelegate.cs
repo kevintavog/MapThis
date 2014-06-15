@@ -135,7 +135,7 @@ namespace MapThis.View
 			else
 			{
 				var keywordLoader = new FileKeywords(selectedFiles);
-				var error = keywordLoader.Load();
+				var error = keywordLoader.Load(folderKeywordsCache);
 				if (error != null)
 				{
 					var message = String.Format("Error loading keywords: {0}", error);

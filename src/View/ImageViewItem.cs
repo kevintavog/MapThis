@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using MonoMac.Foundation;
 using MonoMac.ImageKit;
 using MapThis.Utilities;
 using MapThis.Models;
+using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace MapThis.View
 {
@@ -12,8 +15,11 @@ namespace MapThis.View
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
 
-		public ImageViewItem(string file)
+		private OrderedDictionary fileKeywords;
+
+		public ImageViewItem(string file, OrderedDictionary keywords)
 		{
+			fileKeywords = keywords;
 			File = file;
 			Url = new NSUrl(File, false);
 		}
@@ -21,7 +27,7 @@ namespace MapThis.View
 		public override string ImageUID { get { return Url.Path; } }
 		public override NSString ImageRepresentationType { get { return IKImageBrowserItem.PathRepresentationType; } }
 		public override NSObject ImageRepresentation { get { return Url; } }
-		public override string ImageTitle { get { return String.Format("{0}   {1}", HasGps ? "GPS" : "", HasKeywords ? KeywordCount.ToString() : ""); } }
+		public override string ImageTitle { get { return String.Format("{0} - {1}", HasGps ? "GPS" : "<>", AbbreviatedKeywords); } }
 		public override string ImageSubtitle { get { return Path.GetFileNameWithoutExtension(File); } }
 
 		public bool HasKeywords { get { return !String.IsNullOrEmpty(Keywords); } }
@@ -52,8 +58,31 @@ namespace MapThis.View
 			}
 		}
 
+		private string _abbreviatedKeywords;
+		private string AbbreviatedKeywords
+		{
+			get
+			{
+				if (_abbreviatedKeywords == null)
+				{
+					if (fileKeywords.Count < 1)
+					{
+						_abbreviatedKeywords = "<>";
+					}
+					else
+					{
+						_abbreviatedKeywords = fileKeywords.Keys.OfType<string>().First();
+						if (fileKeywords.Count > 1)
+						{
+							_abbreviatedKeywords += ", +" + (fileKeywords.Count - 1);
+						}
+					}
+				}
 
-		private int KeywordCount { get; set; }
+				return _abbreviatedKeywords;
+			}
+		}
+		private string KeywordCount { get { return fileKeywords.Count.ToString(); } }
 		private string _keywords;
 		public string Keywords
 		{
@@ -61,7 +90,14 @@ namespace MapThis.View
 			{
 				if (_keywords == null)
 				{
-					_keywords = "";
+					if (fileKeywords.Count < 1)
+					{
+						_keywords = "";
+					}
+					else
+					{
+						_keywords = String.Join(", ", fileKeywords.Keys);
+					}
 				}
 
 				return _keywords == "" ? null : _keywords;

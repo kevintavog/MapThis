@@ -14,8 +14,6 @@ namespace MapThis
 	{
 		static private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		static private HashSet<string> keywordPropertyNames = new HashSet<string>() { "XMP:Subject", "IPTC:Keywords" };
-
 		public IEnumerable<string> Filenames { get; private set; }
 		public IList<string> AllKeywords { get; private set; }
 
@@ -74,53 +72,15 @@ namespace MapThis
 			}
 		}
 
-		public string Load()
+		public string Load(FolderKeywordsCache keywordsCache)
 		{
 			try
 			{
-				var quotedFilenames = "\"" + String.Join("\" \"", Filenames) + "\"";
-				var exifOutput = ExifToolInvoker.Run("-j -G -Subject -Keywords {0}", quotedFilenames);
-				var output = JArray.Parse(exifOutput.OutputString);
-				for (int fileIndex = 0; fileIndex < output.Count; ++fileIndex)
+				foreach (var name in Filenames)
 				{
-					var keywordList = new OrderedDictionary();
-					string filename = null;
-					foreach (var child in output[fileIndex].Children())
-					{
-						var prop = child as JProperty;
-						if (prop != null)
-						{
-							if (prop.Name == "SourceFile")
-							{
-								filename = prop.Value.ToString();
-							}
-							if (!keywordPropertyNames.Contains(prop.Name))
-							{
-								continue;
-							}
-
-							var jarray = prop.Value as JArray;
-							if (jarray != null)
-							{
-								foreach (var item in jarray.Values())
-								{
-									AddKeyword(keywordList, item.ToString());
-								}
-							}
-							else
-							{
-								AddKeyword(keywordList, prop.Value.ToString());
-							}
-						}
-					}
-
-					if (filename == null)
-					{
-						logger.Warn("A filename wasn't returned by ExifTools");
-						continue;
-					}
-
-					fileToKeywords[filename] = keywordList;
+					var keywords = keywordsCache.ForFile(name);
+					fileToKeywords[name] = keywords;
+					AddKeywords(keywords);
 				}
 
 				return null;
@@ -137,21 +97,19 @@ namespace MapThis
 			}
 		}
 
-		private void AddKeyword(OrderedDictionary dictionary, string keyword)
+		private void AddKeywords(OrderedDictionary keywords)
 		{
-			if (!dictionary.Contains(keyword))
+			foreach (var k in keywords.Keys)
 			{
-				dictionary.Add(keyword, null);
-			}
+				if (!allKeywords.Contains(k))
+				{
+					allKeywords.Add(k, null);
+				}
 
-			if (!allKeywords.Contains(keyword))
-			{
-				allKeywords.Add(keyword, null);
-			}
-
-			if (!originalKeywords.Contains(keyword))
-			{
-				originalKeywords.Add(keyword, null);
+				if (!originalKeywords.Contains(k))
+				{
+					originalKeywords.Add(k, null);
+				}
 			}
 		}
 
