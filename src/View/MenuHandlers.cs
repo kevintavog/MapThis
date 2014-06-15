@@ -21,6 +21,12 @@ namespace MapThis.View
 			searchField.SelectText(sender);
 		}
 
+		[Export("showImages:")]
+		public void ShowImages(NSObject sender)
+		{
+			Window.MakeFirstResponder(imageView);
+		}
+
 		[Export("openFolder:")]
 		public void OpenFolder(NSObject sender)
 		{
@@ -61,7 +67,7 @@ namespace MapThis.View
 			{
 				if (imageViewItems.Count > 0)
 				{
-					imageView.SelectItemsAt(NSIndexSet.FromNSRange(new NSRange(0, imageViewItems.Count - 1)), false);
+					imageView.SelectItemsAt(NSIndexSet.FromNSRange(new NSRange(0, imageViewItems.Count)), false);
 				}
 			}
 			else

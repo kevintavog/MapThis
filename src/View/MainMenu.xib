@@ -100,14 +100,19 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="jFu-ea-IPV"/>
+                            <menuItem title="Images" keyEquivalent="i" id="yZb-ul-2Fr">
+                                <connections>
+                                    <action selector="showImages:" target="-1" id="2kj-nO-kNJ"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Keywords" keyEquivalent="k" id="298">
                                 <connections>
                                     <action selector="showKeywords:" target="-1" id="hO2-FX-48j"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Map" keyEquivalent="m" id="yZb-ul-2Fr">
+                            <menuItem title="Map" keyEquivalent="m" id="MOy-O1-7w0">
                                 <connections>
-                                    <action selector="showMap:" target="-1" id="yEx-K0-stm"/>
+                                    <action selector="showMap:" target="-1" id="HEP-7T-hsS"/>
                                 </connections>
                             </menuItem>
                         </items>

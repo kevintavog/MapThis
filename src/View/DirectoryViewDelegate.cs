@@ -34,7 +34,12 @@ namespace MapThis.View
 				var fileType = NSWorkspace.SharedWorkspace.TypeOfFile(f.Path, out error);
 				if (imageTypes.Contains(fileType))
 				{
-					imageViewItems.Add(new ImageViewItem(f.Path, folderKeywordsCache.ForFile(f.Path)));
+					var item = new ImageViewItem(f.Path, folderKeywordsCache.ForFile(f.Path));
+					int pos = imageViewItems.BinarySearch(item);
+					if (pos < 0)
+					{
+						imageViewItems.Insert(~pos, item);
+					}
 				}
 			}
 

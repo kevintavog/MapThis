@@ -11,7 +11,7 @@ using NLog;
 
 namespace MapThis.View
 {
-	public class ImageViewItem : IKImageBrowserItem
+	public class ImageViewItem : IKImageBrowserItem, IComparable
 	{
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
@@ -42,6 +42,21 @@ namespace MapThis.View
 		public bool HasGps { get { return !String.IsNullOrEmpty(GpsCoordinates); } }
 		public Location Location { get; private set; }
 
+		public DateTime CreatedTimestamp { get { return ImageDetails.CreatedTime; } }
+
+		private ImageDetails _imageDetails;
+		private ImageDetails ImageDetails
+		{
+			get
+			{
+				if (_imageDetails == null)
+				{
+					_imageDetails = new ImageDetails(File);
+				}
+				return _imageDetails;
+			}
+		}
+
 		private string _gpsCoordinates;
 		public string GpsCoordinates
 		{
@@ -49,7 +64,7 @@ namespace MapThis.View
 			{
 				if (_gpsCoordinates == null)
 				{
-					Location = ImageDetails.GetLocation(File);
+					Location = ImageDetails.Location;
 					if (Location != null)
 					{
 						char latNS = Location.Latitude < 0 ? 'S' : 'N';
@@ -124,5 +139,27 @@ namespace MapThis.View
 			minutes = Math.Truncate(minutes);
 			return String.Format("{0:00}° {1:00}' {2:00}\"", degrees, minutes, seconds);
 		}
+
+
+		#region IComparable implementation
+
+		public int CompareTo(object obj)
+		{
+			ImageViewItem other = obj as ImageViewItem;
+			if (other == null)
+			{
+				return -1;
+			}
+
+			int dateCompare = DateTime.Compare(CreatedTimestamp, other.CreatedTimestamp);
+			if (dateCompare != 0)
+			{
+				return dateCompare;
+			}
+
+			return String.Compare(Path.GetFileName(File), Path.GetFileName(other.File));
+		}
+
+		#endregion
 	}
 }

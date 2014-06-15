@@ -2,18 +2,45 @@
 using ExifLib;
 using NLog;
 using MapThis.Models;
+using System.IO;
 
 namespace MapThis.Utilities
 {
-	static public class ImageDetails
+	public class ImageDetails
 	{
 		static private readonly Logger logger = LogManager.GetCurrentClassLogger();
-		public static Location GetLocation(string fullPath)
+
+		public Location Location { get; private set; }
+		public DateTime CreatedTime { get; private set; }
+
+		public ImageDetails(string fullPath)
 		{
+			Initialize(fullPath);
+		}
+
+		private void Initialize(string fullPath)
+		{
+			CreatedTime = new FileInfo(fullPath).CreationTime;
 			try
 			{
 				using (var exif = new ExifLib.ExifReader(fullPath))
 				{
+					DateTime dt;
+					exif.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dt);
+					if (dt == DateTime.MinValue)
+					{
+						exif.GetTagValue<DateTime>(ExifTags.DateTimeOriginal, out dt);
+					}
+					if (dt == DateTime.MinValue)
+					{
+						exif.GetTagValue<DateTime>(ExifTags.DateTime, out dt);
+					}
+					if (dt != DateTime.MinValue)
+					{
+						CreatedTime = dt;
+					}
+
+
 					string latRef, longRef;
 					double[] latitude, longitude;
 					exif.GetTagValue<string>(ExifTags.GPSLatitudeRef, out latRef);
@@ -23,7 +50,7 @@ namespace MapThis.Utilities
 
 					if (latRef != null && longRef != null)
 					{
-						return new Location(
+						Location = new Location(
 							ConvertLocation(latRef, latitude),
 							ConvertLocation(longRef, longitude));
 					}
@@ -37,7 +64,6 @@ namespace MapThis.Utilities
 			{
 				logger.Info("Exception getting location: {0}", ex);
 			}
-			return null;
 		}
 
 		static private double ConvertLocation(string geoRef, double[] val)
