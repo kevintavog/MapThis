@@ -33,6 +33,21 @@ namespace MapThis
 			UpdateCachedList();
 		}
 
+		public string[] GetMatches(string text)
+		{
+			text = text.Trim();
+			var list = new List<string>();
+			foreach (var k in AsList)
+			{
+				if (k.StartsWith(text, StringComparison.OrdinalIgnoreCase))
+				{
+					list.Add(k);
+				}
+			}
+
+			return list.ToArray();
+		}
+
 		public bool AddKeyword(string word)
 		{
 			if (!keywords.Contains(word))

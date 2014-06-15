@@ -21,10 +21,11 @@ namespace MapThis.View
 		public override string ImageUID { get { return Url.Path; } }
 		public override NSString ImageRepresentationType { get { return IKImageBrowserItem.PathRepresentationType; } }
 		public override NSObject ImageRepresentation { get { return Url; } }
-		public override string ImageTitle { get { return HasGps ? "GPS" : ""; } }
+		public override string ImageTitle { get { return String.Format("{0}   {1}", HasGps ? "GPS" : "", HasKeywords ? KeywordCount.ToString() : ""); } }
 		public override string ImageSubtitle { get { return Path.GetFileNameWithoutExtension(File); } }
 
-		public bool HasGps { get { return !String.IsNullOrEmpty(GpsCoordinates ); } }
+		public bool HasKeywords { get { return !String.IsNullOrEmpty(Keywords); } }
+		public bool HasGps { get { return !String.IsNullOrEmpty(GpsCoordinates); } }
 		public Location Location { get; private set; }
 
 		private string _gpsCoordinates;
@@ -48,6 +49,22 @@ namespace MapThis.View
 				}
 
 				return _gpsCoordinates == "" ? null : _gpsCoordinates;
+			}
+		}
+
+
+		private int KeywordCount { get; set; }
+		private string _keywords;
+		public string Keywords
+		{
+			get
+			{
+				if (_keywords == null)
+				{
+					_keywords = "";
+				}
+
+				return _keywords == "" ? null : _keywords;
 			}
 		}
 

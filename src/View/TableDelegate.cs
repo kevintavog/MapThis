@@ -13,6 +13,9 @@ namespace MapThis.View
 		private KeywordSet keywordSet = new KeywordSet();
 		private float maxColumnWidth;
 
+		private bool commandHandling;
+		private bool completePosting;
+
 
 		[Export("numberOfRowsInTableView:")]
 		public int numberOfRowsInTableView(NSTableView tv)
@@ -265,27 +268,34 @@ namespace MapThis.View
 			fileKeywords.Remove(keyword);
 		}
 
-		private string[] GetCompletions()
+		private string[] KeywordsGetCompletions(NSControl control, NSTextView textView, string[] words, NSRange charRange, int index)
 		{
-			logger.Info("get completions");
-			return keywordSet.AsList.ToArray();
+			return keywordSet.GetMatches(textView.Value);
 		}
 
-		bool isCompleting;
 		private void KeywordsTextChanged(NSNotification notification)
 		{
-			if (fileKeywords == null)
+			var text = keywordEntry.StringValue;
+			if (!completePosting && !commandHandling)
 			{
-				return;
+				completePosting = true;
+				var fieldEditor = (NSTextView)notification.UserInfo.ObjectForKey((NSString)"NSFieldEditor");
+				fieldEditor.Complete(null);
+				completePosting = false;
 			}
 
-			if (!isCompleting)
+			commandHandling = false;
+		}
+
+		private bool KeywordsCommandSelector(NSControl control, NSTextView textView, Selector commandSelector)
+		{
+			if (textView.RespondsToSelector(commandSelector))
 			{
-				isCompleting = true;
-//				var fieldEditor = (NSTextView)notification.UserInfo.ObjectForKey((NSString)"NSFieldEditor");
-//				fieldEditor.Complete(null);
-				isCompleting = false;
+				commandHandling = true;
+				textView.PerformSelector(commandSelector, null, -1);
+				return true;
 			}
+			return false;
 		}
 
 		private void ApplyKeyword()
@@ -317,31 +327,6 @@ namespace MapThis.View
 		private void AddedItemToTableView(NSTableView tableView, IList<string> dataList)
 		{
 			tableView.ReloadData();
-		}
-
-		private class KeywordsTextFieldDelegate : NSTextFieldDelegate
-		{
-			MainWindowController controller;
-
-			public KeywordsTextFieldDelegate(MainWindowController controller)
-			{
-				this.controller = controller;
-			}
-
-			public override void Changed(NSNotification notification)
-			{
-				controller.KeywordsTextChanged(notification);
-			}
-
-			public override void EditingEnded(NSNotification notification)
-			{
-				controller.ApplyKeyword();
-			}
-
-			public override string[] GetCompletions(NSControl control, NSTextView textView, string[] words, NSRange charRange, int index)
-			{
-				return controller.GetCompletions();
-			}
 		}
 	}
 }

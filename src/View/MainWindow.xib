@@ -135,7 +135,7 @@
                                                         </scroller>
                                                     </scrollView>
                                                     <slider verticalHuggingPriority="750" id="8nR-Ib-JI1">
-                                                        <rect key="frame" x="217" y="299" width="132" height="25"/>
+                                                        <rect key="frame" x="216.99999991129144" y="299" width="132" height="25"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.20000000000000001" maxValue="2" doubleValue="0.54000000000000004" tickMarkPosition="above" numberOfTickMarks="11" sliderType="linear" id="Oaf-hb-qJH"/>
                                                         <connections>

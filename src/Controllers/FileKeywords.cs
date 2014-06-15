@@ -209,13 +209,13 @@ namespace MapThis
 				var addCommand = new StringBuilder();
 				foreach (var s in added)
 				{
-					addCommand.AppendFormat("-IPTC:Keywords+={0} -XMP:Subject+={0} ", s);
+					addCommand.AppendFormat("\"-IPTC:Keywords+={0}\" \"-XMP:Subject+={0}\" ", s);
 				}
 
 				var removeCommand = new StringBuilder();
 				foreach (var s in removedKeywords)
 				{
-					removeCommand.AppendFormat("-IPTC:Keywords-={0} -XMP:Subject-={0} ", s);
+					removeCommand.AppendFormat("\"-IPTC:Keywords-={0}\" \"-XMP:Subject-={0}\" ", s);
 				}
 
 				ExifToolInvoker.Run("-P -overwrite_original {0} {1} {2}", addCommand, removeCommand, quotedFilenames);

@@ -94,6 +94,12 @@
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
+                            <menuItem title="Select All" keyEquivalent="a" id="fm9-xd-ihp">
+                                <connections>
+                                    <action selector="selectAllFiles:" target="-1" id="b5H-JN-8Lx"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="jFu-ea-IPV"/>
                             <menuItem title="Keywords" keyEquivalent="k" id="298">
                                 <connections>
                                     <action selector="showKeywords:" target="-1" id="hO2-FX-48j"/>

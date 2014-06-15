@@ -60,10 +60,12 @@ namespace MapThis.View
 			InitializeImageFilters();
 			MapWebView.MainFrame.LoadRequest(new NSUrlRequest(new NSUrl(NSBundle.MainBundle.PathForResource("map", "html"))));
 			searchField.Delegate = new SearchTextFieldDelegate(this);
-			keywordEntry.Delegate = new KeywordsTextFieldDelegate(this);
 			Window.Delegate = new MainWindowDelegate(this);
 			tabSplitView.Delegate = new SplitViewDelegate(this);
 
+			keywordEntry.Changed += delegate(object sender, EventArgs args) { KeywordsTextChanged((NSNotification) sender); };
+			keywordEntry.DoCommandBySelector += KeywordsCommandSelector;
+			keywordEntry.GetCompletions += KeywordsGetCompletions;
 
 			imageFilterSelector.SelectItem(Preferences.Instance.ImageFilterIndex);
 			imageTypes = imageFilters[Preferences.Instance.ImageFilterIndex].Types;

@@ -54,6 +54,23 @@ namespace MapThis.View
 			}
 		}
 
+		[Export("selectAllFiles:")]
+		public void SelectAllFiles(NSObject sender)
+		{
+			if (Window.FirstResponder == directoryView || Window.FirstResponder == imageView)
+			{
+				if (imageViewItems.Count > 0)
+				{
+					imageView.SelectItemsAt(NSIndexSet.FromNSRange(new NSRange(0, imageViewItems.Count - 1)), false);
+				}
+			}
+			else
+			if (Window.FirstResponder == keywordEntry.CurrentEditor)
+			{
+				keywordEntry.SelectText(sender);
+			}
+		}
+
 		public bool OpenFolderDirectly(string path)
 		{
 			directoryTree = new DirectoryTree(path);
