@@ -21,11 +21,12 @@ namespace MapThis.View
 
 		private void PopulateImageView()
 		{
-			var tree = ToTree(directoryView.ItemAtRow(directoryView.SelectedRow));
+            var tree = ToTree(directoryView.ItemAtRow(directoryView.SelectedRow));
 			logger.Info("Selection changed: {0}", tree.Path);
 			Preferences.Instance.LastSelectedFolder = tree.Path;
 			Preferences.Instance.Save();
 
+            ClearAllMarkers();
 			imageViewItems.Clear();
 			folderKeywordsCache.Load(tree.Path);
 			foreach (var f in tree.Files)

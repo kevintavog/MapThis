@@ -43,10 +43,22 @@ namespace MapThis.View
 			var item = ImageAtIndex(index);
 			if (item.HasGps)
 			{
-				mapController.ActivateLocation(item.Location);
-				MapWebView.InvokeMapScript(
-					"setPopup([{0}, {1}], \"{2}\")", 
-					item.Location.Latitude, item.Location.Longitude, item.ImageSubtitle);
+                var markerSet = CreateMarkerSet(item.File);
+
+                mapController.ActivateLocation(item.Location);
+                var tooltip = string.Format("{0}\\n{1}", item.MapTitle, item.Keywords);
+                MapWebView.InvokeMapScript(
+                    "addMarker('{0}', [{1}, {2}], \"{3}\")", 
+                    markerSet.Id, 
+                    item.Location.Latitude, 
+                    item.Location.Longitude, 
+                    tooltip);
+//				MapWebView.InvokeMapScript(
+//                    "setPopup([{0}, {1}], \"{2}<br>{3}\")", 
+//					item.Location.Latitude, 
+//                    item.Location.Longitude, 
+//                    item.MapTitle,
+//                    item.Keywords);
 			}
 		}
 
@@ -92,9 +104,21 @@ namespace MapThis.View
 			return null;
 		}
 
-		private ImageViewItem ImageAtIndex(uint index)
+        private ImageViewItem ImageAtIndex(uint index)
+        {
+            return imageViewItems[(int) index];
+        }
+
+        private ImageViewItem ImageItemFromPath(string path)
 		{
-			return imageViewItems[(int) index];
+            foreach (var item in imageViewItems)
+            {
+                if (item.File == path)
+                {
+                    return item;
+                }
+            }
+            return null;
 		}
 
 		private void UpdateImageViewZoom()

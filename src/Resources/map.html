@@ -24,6 +24,9 @@
 
 		var popup = L.popup();
 
+        var markerLayer = new L.LayerGroup();
+        markerLayer.addTo(map);
+
 
 		function setCenter(location, zoom)
 		{
@@ -35,10 +38,39 @@
 			map.fitBounds(bounds);
 		}
 
-		function addMarker(location)
+        var activeMarkers = {};
+		function addMarker(id, location, title)
 		{
-			L.marker(location).addTo(map);
+			marker = L.marker(location, { draggable:'true', title:title } );
+            setMarkerId(marker, id);
+            activeMarkers[id] = marker;
+
+            marker.on('dragend', function(event)
+            {
+                var marker = event.target;
+                var position = marker.getLatLng();
+                MapThis.updateMarker(markerId(marker), position.lat, position.lng);
+            });
+            markerLayer.addLayer(marker);
+<!--            marker.addTo(map); -->
 		}
+
+        function removeMarker(id)
+        {
+            var marker = activeMarkers[id];
+            if (marker != null)
+            {
+                markerLayer.removeLayer(marker);
+<!--                map.removeLayer(marker); -->
+                activeMarkers[id] = null;
+            }
+        }
+
+        function removeAllMarkers()
+        {
+            markerLayer.clearLayers();
+            activeMarkers.length = 0;
+        }
 
 		function setPopup(location, s)
 		{
@@ -69,6 +101,16 @@
 
 		map.on('click', onMapClick);
 
+
+        function markerId(obj) 
+        {
+            return String(obj.__obj_id);
+        }
+
+        function setMarkerId(obj, id)
+        {
+            obj.__obj_id=id;
+        }
 	</script>
 </body>
 </html>

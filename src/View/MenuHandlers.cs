@@ -27,6 +27,54 @@ namespace MapThis.View
 			Window.MakeFirstResponder(imageView);
 		}
 
+        [Export("showImagesOnMap:")]
+        public void ShowImagesOnMap(NSObject sender)
+        {
+            // All images in current view, whether selcted or not
+            logger.Info("Show images on map");
+            ClearAllMarkers();
+            double minLat = 90.0;
+            double maxLat = -90.0;
+            double minLng = 180.0;
+            double maxLng = -180.0;
+            bool setGps = false;
+
+            foreach (var item in imageViewItems)
+            {
+                if (item.HasGps)
+                {
+                    setGps = true;
+                    minLat = Math.Min(minLat, item.Location.Latitude);
+                    maxLat = Math.Max(maxLat, item.Location.Latitude);
+
+                    minLng = Math.Min(minLng, item.Location.Longitude);
+                    maxLng = Math.Max(maxLng, item.Location.Longitude);
+                }
+            }
+
+            if (!setGps)
+            {
+                return;
+            }
+
+            MapWebView.InvokeMapScript("fitToBounds([[{0}, {1}],[{2}, {3}]])", minLat, minLng, maxLat, maxLng);
+
+            foreach (var item in imageViewItems)
+            {
+                if (item.HasGps)
+                {
+                    var markerSet = CreateMarkerSet(item.File);
+                    var tooltip = string.Format("{0}\\n{1}", item.MapTitle, item.Keywords);
+                    MapWebView.InvokeMapScript(
+                        "addMarker({0}, [{1}, {2}], \"{3}\")", 
+                        markerSet.Id, 
+                        item.Location.Latitude, 
+                        item.Location.Longitude, 
+                        tooltip);
+                }
+            }
+        }
+
 		[Export("openFolder:")]
 		public void OpenFolder(NSObject sender)
 		{

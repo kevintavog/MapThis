@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
@@ -113,6 +113,12 @@
                             <menuItem title="Map" keyEquivalent="m" id="MOy-O1-7w0">
                                 <connections>
                                     <action selector="showMap:" target="-1" id="HEP-7T-hsS"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="HWI-bQ-g2E"/>
+                            <menuItem title="Show images on map" keyEquivalent="w" id="qEM-KM-tgt">
+                                <connections>
+                                    <action selector="showImagesOnMap:" target="-1" id="dtl-cC-OM3"/>
                                 </connections>
                             </menuItem>
                         </items>

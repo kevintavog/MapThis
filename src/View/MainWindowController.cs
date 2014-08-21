@@ -10,6 +10,7 @@ using MapThis.Controllers;
 using MapThis.Models;
 using MonoMac.ImageKit;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace MapThis.View
 {
@@ -21,6 +22,7 @@ namespace MapThis.View
 		private MapController mapController;
 		private DirectoryTree directoryTree;
 		private List<ImageViewItem> imageViewItems = new List<ImageViewItem>();
+        private IDictionary<string,MarkerSet> allMarkers = new Dictionary<string,MarkerSet>();
 
 
 #region Constructors
@@ -132,24 +134,94 @@ namespace MapThis.View
 			statusLabel.StringValue = String.Format(message, args);
 		}
 
+        private MarkerSet CreateMarkerSet(string filePath)
+        {
+            var list = new List<string>();
+            list.Add(filePath);
+            return CreateMarkerSet(list);
+        }
+
+        private MarkerSet CreateMarkerSet(IList<string> pathList)
+        {
+            // Ensure files aren't in multiple marker sets - that's confusing.
+            HashSet<MarkerSet> removeSet = new HashSet<MarkerSet>();
+            foreach (var ms in allMarkers.Values)
+            {
+                foreach (var path in pathList)
+                {
+                    if (ms.Files.Contains(path))
+                    {
+                        removeSet.Add(ms);
+                        break;
+                    }
+                }
+            }
+
+            foreach (var ms in removeSet)
+            {
+                MapWebView.InvokeMapScript("removeMarker({0})", ms.Id);
+            }
+
+            var markerSet = new MarkerSet { Files = pathList };
+            allMarkers.Add(markerSet.Id, markerSet);
+            return markerSet;
+        }
+
+        private void ClearAllMarkers()
+        {
+            MapWebView.InvokeMapScript("removeAllMarkers()");
+            allMarkers.Clear();
+        }
+
 		public void CompleteDrop(double latitude, double longitude, IList<string> pathList)
 		{
-			MapWebView.InvokeMapScript("addMarker([{0}, {1}])", latitude, longitude);
-			SetStatusText("Updating 1 of {0} file(s) to {1}, {2}", pathList.Count, latitude, longitude);
+            var markerSet = CreateMarkerSet(pathList);
+            MapWebView.InvokeMapScript("addMarker({0}, [{1}, {2}], \"{3}\")", markerSet.Id, latitude, longitude, markerSet.Title);
 
-			Task.Run( () => GeoUpdater.UpdateFiles(
-				pathList, 
-				latitude, 
-				longitude, 
-				(s,i) => BeginInvokeOnMainThread( delegate 
-				{ 
-					SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
-				}),
-				() => BeginInvokeOnMainThread( delegate 
-				{ 
-					SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
-				})));
+            UpdateFileLocations(pathList, latitude, longitude);
 		}
+
+        private void UpdateFileLocations(IList<string> pathList, double latitude, double longitude)
+        {
+            SetStatusText("Updating 1 of {0} file(s) to {1}, {2}", pathList.Count, latitude, longitude);
+
+            var location = new Location(latitude, longitude);
+            Task.Run( () => GeoUpdater.UpdateFiles(
+                pathList, 
+                latitude, 
+                longitude, 
+                (s,i) => BeginInvokeOnMainThread( delegate 
+                {
+                    var imageItem = ImageItemFromPath(s);
+                    if (imageItem != null)
+                    {
+                        imageItem.UpdateLocation(location);
+                        logger.Info("Updated {0} to {1}", imageItem.GetHashCode(), location.ToDmsString());
+                    }
+                    SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
+                }),
+                () => BeginInvokeOnMainThread( delegate 
+                { 
+                    SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
+                    imageView.ReloadData();
+                })));
+        }
+
+        private MarkerSet GetMarker(string markerId)
+        {
+            MarkerSet ms;
+            if (allMarkers.TryGetValue(markerId, out ms))
+            {
+                return ms;
+            }
+
+            return null;
+        }
+
+        private void UpdateMarker(MarkerSet markerSet, double latitude, double longitude)
+        {
+            UpdateFileLocations(markerSet.Files, latitude, longitude);
+        }
 
 		private void ImageFilesSelected(IList<string> selectedFiles)
 		{

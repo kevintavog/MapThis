@@ -19,9 +19,7 @@ namespace MapThis.Controllers
 
 		public void ActivateLocation(Location location)
 		{
-			InvokeMapScript(
-				"setCenter([{0}, {1}], 18)", 
-				location.Latitude, location.Longitude);
+			InvokeMapScript("setCenter([{0}, {1}], 18)", location.Latitude, location.Longitude);
 		}
 
 		public void ActivateSearchResult(SearchArea sa)
@@ -32,11 +30,14 @@ namespace MapThis.Controllers
 			}
 			else
 			{
-				InvokeMapScript(
-					"fitToBounds([[{0}, {1}],[{2}, {3}]])", 
-					sa.Bottom, sa.Left, sa.Top, sa.Right);
+				InvokeMapScript("fitToBounds([[{0}, {1}],[{2}, {3}]])", sa.Bottom, sa.Left, sa.Top, sa.Right);
 			}
 		}
+
+        static public void NameFromLocation(Location location, ReverseLocator.Filter filter, Action<string> action)
+        {
+            NameFromLocation(location.Latitude, location.Longitude, filter, action);
+        }
 
 		static public void NameFromLocation(double latitude, double longitude, ReverseLocator.Filter filter, Action<string> action)
 		{
@@ -49,4 +50,3 @@ namespace MapThis.Controllers
 		}
 	}
 }
-

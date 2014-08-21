@@ -32,12 +32,19 @@ namespace MapThis.View
 			_keywords = null;
 		}
 
+        public void UpdateLocation(Location newLocation)
+        {
+            Location = newLocation;
+            _gpsCoordinates = Location == null ? "" : Location.ToDmsString();
+        }
+
 		public override string ImageUID { get { return Url.Path; } }
 		public override NSString ImageRepresentationType { get { return IKImageBrowserItem.PathRepresentationType; } }
 		public override NSObject ImageRepresentation { get { return Url; } }
 		public override string ImageTitle { get { return String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(File), AbbreviatedKeywords); } }
 		public override string ImageSubtitle { get { return HasGps ? GpsCoordinates : "<>"; } }
 
+        public string MapTitle { get { return Path.GetFileNameWithoutExtension(File); } }
 		public bool HasKeywords { get { return !String.IsNullOrEmpty(Keywords); } }
 		public bool HasGps { get { return !String.IsNullOrEmpty(GpsCoordinates); } }
 		public Location Location { get; private set; }
@@ -67,9 +74,7 @@ namespace MapThis.View
 					Location = ImageDetails.Location;
 					if (Location != null)
 					{
-						char latNS = Location.Latitude < 0 ? 'S' : 'N';
-						char longEW = Location.Longitude < 0 ? 'W' : 'E';
-						_gpsCoordinates = String.Format("{0} {1}, {2} {3}", ToDms(Location.Latitude), latNS, ToDms(Location.Longitude), longEW);
+                        _gpsCoordinates = Location.ToDmsString();
 					}
 					else
 					{
@@ -125,19 +130,6 @@ namespace MapThis.View
 
 				return _keywords == "" ? null : _keywords;
 			}
-		}
-
-		private string ToDms(double l)
-		{
-			if (l < 0)
-			{
-				l *= -1f;
-			}
-			var degrees = Math.Truncate(l);
-			var minutes = (l - degrees) * 60f;
-			var seconds = (minutes - (int) minutes) * 60;
-			minutes = Math.Truncate(minutes);
-			return String.Format("{0:00}° {1:00}' {2:00}\"", degrees, minutes, seconds);
 		}
 
 

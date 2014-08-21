@@ -4,17 +4,12 @@ using MapThis.Controllers;
 using MonoMac.ObjCRuntime;
 using NLog;
 using MonoMac.WebKit;
+using MapThis.Models;
 
 namespace MapThis.View
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
-		[Export ("message:")]
-		public string message()
-		{
-			return "Hello world";
-		}
-
 		[Export ("logMessage:")]
 		public void logMessage(NSString message)
 		{
@@ -24,12 +19,12 @@ namespace MapThis.View
 		[Export ("clicked:")]
 		public void clicked(NSNumber lat, NSNumber lng)
 		{
-			MapWebView.InvokeMapScript("addMarker([{0}, {1}])", lat, lng);
-			//			InvokeMapScript("setPopup([{0}, {1}], \"{2}\")", lat, lng, "Looking up name...");
+            var location = new Location(lat.DoubleValue, lng.DoubleValue);
+            var message = string.Format("Looking up {0}...", location.ToDmsString()).Replace("\"", "\\\"");
+            MapWebView.InvokeMapScript("setPopup([{0}, {1}], \"{2}\")", lat, lng, message);
 
 			MapController.NameFromLocation(
-				lat.DoubleValue,
-				lng.DoubleValue,
+                location,
 				ReverseLocator.Filter.Minimal,
 				(s) => 
 			{
@@ -39,6 +34,21 @@ namespace MapThis.View
 				});
 			});
 		}
+
+        [Export ("updateMarker:")]
+        public void updateMarker(NSString id, NSNumber lat, NSNumber lng)
+        {
+            logger.Info("updateMarker: {0} to {1}, {2}", id, lat, lng);
+            var ms = GetMarker(id);
+            if (ms == null)
+            {
+                logger.Warn("Unable to find marker: '{0}'", id);
+            }
+            else
+            {
+                UpdateMarker(ms, lat.DoubleValue, lng.DoubleValue);
+            }
+        }
 
 		[Export ("webScriptNameForSelector:")]
 		static string webScriptNameForSelector(Selector sel)
@@ -51,9 +61,9 @@ namespace MapThis.View
 				case "logMessage:":
 					return "logMessage";
 
-				case "message:":
-					return "message";
-			}
+                case "updateMarker:":
+                    return "updateMarker";
+            }
 
 			return "";
 		}
@@ -65,7 +75,7 @@ namespace MapThis.View
 			{
 				case "clicked:":
 				case "logMessage:":
-				case "message:":
+                case "updateMarker:":
 					return false;
 			}
 
@@ -83,7 +93,5 @@ namespace MapThis.View
 		{
 			FinishedLoading();
 		}
-
 	}
 }
-
