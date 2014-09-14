@@ -65,6 +65,14 @@ namespace MapThis.View
 			Window.Delegate = new MainWindowDelegate(this);
 			tabSplitView.Delegate = new SplitViewDelegate(this);
 
+            imageView.SetValueForKey(NSColor.DarkGray, IKImageBrowserView.BackgroundColorKey);
+            var oldAttrs = imageView.ValueForKey(IKImageBrowserView.CellsTitleAttributesKey);
+            var newAttrs = oldAttrs.MutableCopy();
+            newAttrs.SetValueForKey(NSColor.White, NSAttributedString.ForegroundColorAttributeName);
+            imageView.SetValueForKey(newAttrs, IKImageBrowserView.CellsTitleAttributesKey);
+            imageView.SetValueForKey(newAttrs, IKImageBrowserView.CellsSubtitleAttributesKey);
+
+
 			keywordEntry.Changed += delegate(object sender, EventArgs args) { KeywordsTextChanged((NSNotification) sender); };
 			keywordEntry.DoCommandBySelector += KeywordsCommandSelector;
 			keywordEntry.GetCompletions += KeywordsGetCompletions;
@@ -107,8 +115,6 @@ namespace MapThis.View
 					directoryView.SelectRow(bestRow, false);
 				}
 			}
-
-//			imageView.SetValueForKey(NSColor.ControlDarkShadow, IKImageBrowserView.BackgroundColorKey);
 
 			MapWebView.CompleteDropAction = CompleteDrop;
 		}
