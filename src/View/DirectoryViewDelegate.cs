@@ -46,6 +46,7 @@ namespace MapThis.View
 
 			imageView.ReloadData();
 			ConfigureImageViewTooltips();
+            SetFolderStatus();
 		}
 
 		[Export("outlineViewSelectionDidChange:")]
@@ -88,4 +89,3 @@ namespace MapThis.View
 		}
 	}
 }
-

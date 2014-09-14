@@ -86,6 +86,14 @@ namespace MapThis.View
 			}
 		}
 
+        public IEnumerable<string> KeywordsList
+        {
+            get
+            {
+                return fileKeywords.Keys.OfType<string>();
+            }
+        }
+
 		private string _abbreviatedKeywords;
 		private string AbbreviatedKeywords
 		{

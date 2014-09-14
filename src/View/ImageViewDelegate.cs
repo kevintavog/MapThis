@@ -5,6 +5,8 @@ using System.IO;
 using System.Collections.Generic;
 using MonoMac.AppKit;
 using System.Drawing;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace MapThis.View
 {
@@ -53,12 +55,6 @@ namespace MapThis.View
                     item.Location.Latitude, 
                     item.Location.Longitude, 
                     tooltip);
-//				MapWebView.InvokeMapScript(
-//                    "setPopup([{0}, {1}], \"{2}<br>{3}\")", 
-//					item.Location.Latitude, 
-//                    item.Location.Longitude, 
-//                    item.MapTitle,
-//                    item.Keywords);
 			}
 		}
 
@@ -77,7 +73,7 @@ namespace MapThis.View
 			}
 			else
 			{
-				SetStatusText("");
+                SetFolderStatus();
 			}
 
 			var selectedFiles = new List<string>();
@@ -103,6 +99,30 @@ namespace MapThis.View
 			logger.Info("Nothing for {0}", index);
 			return null;
 		}
+
+        private void SetFolderStatus()
+        {
+            var keywords = new HashSet<string>();
+            var countGps = 0;
+            var countKeywords = 0;
+            foreach (var item in imageViewItems)
+            {
+                if (item.HasGps)
+                    ++countGps;
+                if (item.HasKeywords)
+                {
+                    ++countKeywords;
+                    foreach (var k in item.KeywordsList)
+                        keywords.Add(k);
+                }
+            }
+
+            SetStatusText("{0} files; {1} with GPS; {2} with keywords; {3}", 
+                imageViewItems.Count, 
+                countGps, 
+                countKeywords,
+                String.Join(", ", keywords.OrderBy(s => s)));
+        }
 
         private ImageViewItem ImageAtIndex(uint index)
         {
@@ -138,4 +158,3 @@ namespace MapThis.View
 		}
 	}
 }
-
