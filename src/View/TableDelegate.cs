@@ -131,7 +131,6 @@ namespace MapThis.View
 				}
 				else
 				{
-					folderKeywordsCache.FilesUpdated(fileKeywords.Filenames);
 					ImageFilesUpdated(fileKeywords.Filenames);
 				}
 			}
@@ -143,7 +142,7 @@ namespace MapThis.View
 			else
 			{
 				var keywordLoader = new FileKeywords(selectedFiles);
-				var error = keywordLoader.Load(folderKeywordsCache);
+                var error = keywordLoader.Load( (fn) => ImageItemFromPath(fn).KeywordsList);
 				if (error != null)
 				{
 					var message = String.Format("Error loading keywords: {0}", error);

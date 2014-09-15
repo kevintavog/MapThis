@@ -12,18 +12,26 @@ namespace MapThis.Utilities
 
 		public Location Location { get; private set; }
 		public DateTime CreatedTime { get; private set; }
+        public string[] Keywords { get; private set; }
+        public string FullPath { get; private set; }
 
 		public ImageDetails(string fullPath)
 		{
-			Initialize(fullPath);
+            FullPath = fullPath;
+			Initialize();
 		}
 
-		private void Initialize(string fullPath)
+        public void ReloadKeywords()
+        {
+            Keywords = new XmpReader(FullPath).Keywords;
+        }
+
+		private void Initialize()
 		{
-			CreatedTime = new FileInfo(fullPath).CreationTime;
+			CreatedTime = new FileInfo(FullPath).CreationTime;
 			try
 			{
-				using (var exif = new ExifLib.ExifReader(fullPath))
+				using (var exif = new ExifLib.ExifReader(FullPath))
 				{
 					DateTime dt;
 					exif.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dt);
@@ -64,6 +72,8 @@ namespace MapThis.Utilities
 			{
 				logger.Info("Exception getting location: {0}", ex);
 			}
+
+            ReloadKeywords();
 		}
 
 		static private double ConvertLocation(string geoRef, double[] val)
@@ -77,4 +87,3 @@ namespace MapThis.Utilities
 		}
 	}
 }
-

@@ -16,20 +16,18 @@ namespace MapThis.View
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
 
-		private OrderedDictionary fileKeywords;
-
-		public ImageViewItem(string file, OrderedDictionary keywords)
+		public ImageViewItem(string file)
 		{
-			fileKeywords = keywords;
 			File = file;
 			Url = new NSUrl(File, false);
 		}
 
-		public void UpdateKeywords(OrderedDictionary keywords)
+		public void UpdateKeywords()
 		{
-			fileKeywords = keywords;
 			_abbreviatedKeywords = null;
 			_keywords = null;
+            if (_imageDetails != null)
+                _imageDetails.ReloadKeywords();
 		}
 
         public void UpdateLocation(Location newLocation)
@@ -90,7 +88,7 @@ namespace MapThis.View
         {
             get
             {
-                return fileKeywords.Keys.OfType<string>();
+                return ImageDetails.Keywords;
             }
         }
 
@@ -101,16 +99,16 @@ namespace MapThis.View
 			{
 				if (_abbreviatedKeywords == null)
 				{
-					if (fileKeywords.Count < 1)
+                    if (ImageDetails.Keywords.Count() < 1)
 					{
 						_abbreviatedKeywords = "<>";
 					}
 					else
 					{
-						_abbreviatedKeywords = fileKeywords.Keys.OfType<string>().First();
-						if (fileKeywords.Count > 1)
+                        _abbreviatedKeywords = ImageDetails.Keywords.First();
+                        if (ImageDetails.Keywords.Count() > 1)
 						{
-							_abbreviatedKeywords += " +" + (fileKeywords.Count - 1);
+                            _abbreviatedKeywords += " +" + (ImageDetails.Keywords.Count() - 1);
 						}
 					}
 				}
@@ -118,7 +116,8 @@ namespace MapThis.View
 				return _abbreviatedKeywords;
 			}
 		}
-		private string KeywordCount { get { return fileKeywords.Count.ToString(); } }
+
+        private string KeywordCount { get { return ImageDetails.Keywords.Count().ToString(); } }
 		private string _keywords;
 		public string Keywords
 		{
@@ -126,13 +125,13 @@ namespace MapThis.View
 			{
 				if (_keywords == null)
 				{
-					if (fileKeywords.Count < 1)
+                    if (ImageDetails.Keywords.Count() < 1)
 					{
 						_keywords = "";
 					}
 					else
 					{
-						_keywords = String.Join(", ", fileKeywords.Keys.OfType<string>());
+                        _keywords = String.Join(", ", ImageDetails.Keywords);
 					}
 				}
 
@@ -140,8 +139,6 @@ namespace MapThis.View
 			}
 		}
 
-
-		#region IComparable implementation
 
 		public int CompareTo(object obj)
 		{
@@ -159,7 +156,5 @@ namespace MapThis.View
 
 			return String.Compare(Path.GetFileName(File), Path.GetFileName(other.File));
 		}
-
-		#endregion
 	}
 }

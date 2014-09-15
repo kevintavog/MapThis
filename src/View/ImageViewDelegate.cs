@@ -20,7 +20,7 @@ namespace MapThis.View
 				{
 					if (f == imageItem.File)
 					{
-						imageItem.UpdateKeywords(folderKeywordsCache.ForFile(imageItem.File));
+						imageItem.UpdateKeywords();
 						break;
 					}
 				}

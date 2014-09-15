@@ -11,7 +11,6 @@ namespace MapThis.View
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
 		private HashSet<string> imageTypes = new HashSet<string>();
-		private FolderKeywordsCache folderKeywordsCache = new FolderKeywordsCache();
 
 		private void ChangeFileTypes(HashSet<string> newTypes)
 		{
@@ -28,14 +27,13 @@ namespace MapThis.View
 
             ClearAllMarkers();
 			imageViewItems.Clear();
-			folderKeywordsCache.Load(tree.Path);
 			foreach (var f in tree.Files)
 			{
 				NSError error;
 				var fileType = NSWorkspace.SharedWorkspace.TypeOfFile(f.Path, out error);
 				if (imageTypes.Contains(fileType))
 				{
-					var item = new ImageViewItem(f.Path, folderKeywordsCache.ForFile(f.Path));
+                    var item = new ImageViewItem(f.Path);
 					int pos = imageViewItems.BinarySearch(item);
 					if (pos < 0)
 					{

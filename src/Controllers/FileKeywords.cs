@@ -72,13 +72,13 @@ namespace MapThis
 			}
 		}
 
-		public string Load(FolderKeywordsCache keywordsCache)
+        public string Load(Func<string, IEnumerable<string>> getKeywords)
 		{
 			try
 			{
 				foreach (var name in Filenames)
 				{
-					var keywords = keywordsCache.ForFile(name);
+                    var keywords = ToDictionary(getKeywords(name));
 					fileToKeywords[name] = keywords;
 					AddKeywords(keywords);
 				}
@@ -96,6 +96,19 @@ namespace MapThis
 				CacheAllKeywords();
 			}
 		}
+
+        private OrderedDictionary ToDictionary(IEnumerable<string> keywords)
+        {
+            var od = new OrderedDictionary();
+            foreach (var k in keywords)
+            {
+                if (!od.Contains(k))
+                {
+                    od.Add(k, null);
+                }
+            }
+            return od;
+        }
 
 		private void AddKeywords(OrderedDictionary keywords)
 		{
