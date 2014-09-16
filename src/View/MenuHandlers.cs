@@ -2,6 +2,9 @@
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MapThis.Models;
+using System.Collections.Generic;
+using MapThis.Controllers;
+using System.Threading.Tasks;
 
 namespace MapThis.View
 {
@@ -21,6 +24,41 @@ namespace MapThis.View
 			searchField.SelectText(sender);
 		}
 
+        [Export("clearLocations:")]
+        public void ClearLocations(NSObject sender)
+        {
+            var selectedFiles = new List<string>();
+            if (imageView.SelectionIndexes.Count > 0)
+            {
+                foreach (var index in imageView.SelectionIndexes.ToArray())
+                {
+                    selectedFiles.Add(ImageAtIndex(index).File);
+                }
+            }
+
+            if (selectedFiles.Count < 1)
+                return;
+
+            SetStatusText("Clearing location from 1 of {0} file(s)", selectedFiles.Count);
+
+            Task.Run( () => GeoUpdater.ClearLocation(
+                selectedFiles, 
+                (s,i) => BeginInvokeOnMainThread( delegate 
+                {
+                    var imageItem = ImageItemFromPath(s);
+                    if (imageItem != null)
+                    {
+                        imageItem.UpdateLocation(null);
+                    }
+                    SetStatusText("Clearing location from {0} of {1} files", i, selectedFiles.Count);
+                }),
+                () => BeginInvokeOnMainThread( delegate 
+                { 
+                    SetStatusText("Finished clearing location from {0} files", selectedFiles.Count);
+                    imageView.ReloadData();
+                })));
+        }
+
 		[Export("showImages:")]
 		public void ShowImages(NSObject sender)
 		{
@@ -33,6 +71,7 @@ namespace MapThis.View
             // All images in current view, whether selcted or not
             logger.Info("Show images on map");
             ClearAllMarkers();
+            tabView.Select(mapTab);
             double minLat = 90.0;
             double maxLat = -90.0;
             double minLng = 180.0;

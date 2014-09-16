@@ -25,8 +25,6 @@ namespace MapThis.View
         private IDictionary<string,MarkerSet> allMarkers = new Dictionary<string,MarkerSet>();
 
 
-#region Constructors
-
 		public MainWindowController(IntPtr handle) : base(handle)
 		{
 			Initialize();
@@ -49,7 +47,6 @@ namespace MapThis.View
 			mapController = new MapController( (s,a) => { MapWebView.InvokeMapScript(s,a); } );
 		}
 
-#endregion
 
 		public MapWebView MapWebView { get { return (MapWebView) webView; } }
 		public new MainWindow Window { get { return (MainWindow) base.Window; } }
@@ -202,7 +199,6 @@ namespace MapThis.View
                     if (imageItem != null)
                     {
                         imageItem.UpdateLocation(location);
-                        logger.Info("Updated {0} to {1}", imageItem.GetHashCode(), location.ToDmsString());
                     }
                     SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
                 }),

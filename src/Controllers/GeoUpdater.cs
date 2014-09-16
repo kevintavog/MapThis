@@ -19,47 +19,72 @@ namespace MapThis.Controllers
 			Action<string,int> fileCompletion,
 			Action operationCompleted)
 		{
-			// Make sure each path is a file that exists - no support for directories in this method
-			foreach (var file in filePaths)
-			{
-				if (false == File.Exists(file))
-				{
-					throw new ArgumentException("Path must be an existing file: " + file);
-				}
-			}
+            var latRef = latitude < 0 ? "S" : "N";
+            var longRef = longitude < 0 ? "W" : "E";
+            var normLat = Math.Abs(latitude);
+            var normlLong = Math.Abs(longitude);
 
-			if (autoCheckExifTool)
-			{
-				if (!autoCheckExifTool)
-				{
-					throw new InvalidOperationException("Unable to run ExifTool");
-				}
-			}
-
-			var latRef = latitude < 0 ? "S" : "N";
-			var longRef = longitude < 0 ? "W" : "E";
-			var normLat = Math.Abs(latitude);
-			var normlLong = Math.Abs(longitude);
-
-			foreach (var file in filePaths)
-			{
-				if (false == File.Exists(file))
-				{
-					throw new ArgumentException("Path must be an existing file: " + file);
-				}
-
-				UpdateExif(file, normLat, latRef, normlLong, longRef);
-				if (fileCompletion != null)
-				{
-					fileCompletion(file, filePaths.IndexOf(file));
-				}
-			}
-
-			if (operationCompleted != null)
-			{
-				operationCompleted();
-			}
+            ProcessFiles(
+                filePaths,
+                (f) => UpdateExif(f, normLat, latRef, normlLong, longRef),
+                fileCompletion,
+                operationCompleted);
 		}
+
+        static public void ClearLocation(
+            IList<string> filePaths, 
+            Action<string,int> fileCompletion,
+            Action operationCompleted)
+        {
+            ProcessFiles(
+                filePaths,
+                (f) => ClearLocation(f),
+                fileCompletion,
+                operationCompleted);
+        }
+
+        static private void ProcessFiles(
+            IList<string> filePaths, 
+            Action<string> process, 
+            Action<string,int> fileCompletion,
+            Action operationCompleted)
+        {
+            // Make sure each path is a file that exists - no support for directories in this method
+            foreach (var file in filePaths)
+            {
+                if (false == File.Exists(file))
+                {
+                    throw new ArgumentException("Path must be an existing file: " + file);
+                }
+            }
+
+            if (autoCheckExifTool)
+            {
+                if (!autoCheckExifTool)
+                {
+                    throw new InvalidOperationException("Unable to run ExifTool");
+                }
+            }
+
+            foreach (var file in filePaths)
+            {
+                if (false == File.Exists(file))
+                {
+                    throw new ArgumentException("Path must be an existing file: " + file);
+                }
+
+                process(file);
+                if (fileCompletion != null)
+                {
+                    fileCompletion(file, filePaths.IndexOf(file));
+                }
+            }
+
+            if (operationCompleted != null)
+            {
+                operationCompleted();
+            }
+        }
 
 		static public bool CheckExifTool()
 		{
@@ -80,6 +105,13 @@ namespace MapThis.Controllers
 				return false;
 			}
 		}
+
+        static private void ClearLocation(string filename)
+        {
+            RunExifTool(
+                "-P -fast -q -overwrite_original -exif:gpslatitude= -exif:gpslatituderef= -exif:gpslongitude= -exif:gpslongituderef= \"{0}\"",
+                filename);
+        }
 
 		static private void UpdateExif(string filename, double exifLatitude, string latitudeRef, double exifLongitude, string longitudeRef)
 		{
