@@ -181,12 +181,42 @@ namespace MapThis.View
             var markerSet = CreateMarkerSet(pathList);
             MapWebView.InvokeMapScript("addMarker({0}, [{1}, {2}], \"{3}\")", markerSet.Id, latitude, longitude, markerSet.Title);
 
-            UpdateFileLocations(pathList, latitude, longitude);
+            // Exclude any files with existing geolocations - don't overwrite, unless a single file is selected
+            var updateList = new List<string>();
+            var skipList = new List<string>();
+            foreach (var f in pathList)
+            {
+                var ii = ImageItemFromPath(f);
+                if (ii != null)
+                {
+                    if (ii.HasGps && pathList.Count > 1)
+                    {
+                        skipList.Add(Path.GetFileName(f));
+                        logger.Info("Not setting location on {0}", f);
+                    }
+                    else
+                        updateList.Add(f);
+                }
+            }
+
+            UpdateFileLocations(updateList, latitude, longitude, skipList.Count < 1);
+
+            if (skipList.Count > 0)
+            {
+                BeginInvokeOnMainThread(delegate 
+                {
+                    SetStatusText("Some files were not updated due to existing location information: {0}", String.Join(", ", skipList));
+                });
+            }
 		}
 
-        private void UpdateFileLocations(IList<string> pathList, double latitude, double longitude)
+        private void UpdateFileLocations(IList<string> pathList, double latitude, double longitude, bool updateStatusText = true)
         {
-            SetStatusText("Updating 1 of {0} file(s) to {1}, {2}", pathList.Count, latitude, longitude);
+            if (pathList.Count < 1)
+                return;
+
+            if (updateStatusText)
+                SetStatusText("Updating 1 of {0} file(s) to {1}, {2}", pathList.Count, latitude, longitude);
 
             var location = new Location(latitude, longitude);
             Task.Run( () => GeoUpdater.UpdateFiles(
@@ -200,11 +230,13 @@ namespace MapThis.View
                     {
                         imageItem.UpdateLocation(location);
                     }
-                    SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
+                    if (updateStatusText)
+                        SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
                 }),
                 () => BeginInvokeOnMainThread( delegate 
                 { 
-                    SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
+                    if (updateStatusText)
+                        SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
                     imageView.ReloadData();
                 })));
         }
