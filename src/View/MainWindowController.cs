@@ -215,28 +215,29 @@ namespace MapThis.View
             if (pathList.Count < 1)
                 return;
 
-            if (updateStatusText)
-                SetStatusText("Updating 1 of {0} file(s) to {1}, {2}", pathList.Count, latitude, longitude);
-
             var location = new Location(latitude, longitude);
+            if (updateStatusText)
+                SetStatusText("Updating {0} file(s) to {1}", pathList.Count, location.ToDmsString());
+
             Task.Run( () => GeoUpdater.UpdateFiles(
                 pathList, 
                 latitude, 
-                longitude, 
-                (s,i) => BeginInvokeOnMainThread( delegate 
-                {
-                    var imageItem = ImageItemFromPath(s);
-                    if (imageItem != null)
-                    {
-                        imageItem.UpdateLocation(location);
-                    }
-                    if (updateStatusText)
-                        SetStatusText("Updating {0} of {1} files to {2}, {3}", i, pathList.Count, latitude, longitude);
-                }),
+                longitude,
                 () => BeginInvokeOnMainThread( delegate 
                 { 
+                    foreach (var f in pathList)
+                    {
+                        var imageItem = ImageItemFromPath(f);
+                        if (imageItem != null)
+                        {
+                            imageItem.UpdateLocation(location);
+                        }
+                    }
+
                     if (updateStatusText)
-                        SetStatusText("Finished updating {0} files to {1}, {2}", pathList.Count, latitude, longitude);
+                    {
+                        SetStatusText("Finished updating {0} files to {1}", pathList.Count, location.ToDmsString());
+                    }
                     imageView.ReloadData();
                 })));
         }

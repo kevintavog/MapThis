@@ -39,21 +39,21 @@ namespace MapThis.View
             if (selectedFiles.Count < 1)
                 return;
 
-            SetStatusText("Clearing location from 1 of {0} file(s)", selectedFiles.Count);
+            SetStatusText("Clearing location from {0} file(s)", selectedFiles.Count);
 
             Task.Run( () => GeoUpdater.ClearLocation(
-                selectedFiles, 
-                (s,i) => BeginInvokeOnMainThread( delegate 
-                {
-                    var imageItem = ImageItemFromPath(s);
-                    if (imageItem != null)
-                    {
-                        imageItem.UpdateLocation(null);
-                    }
-                    SetStatusText("Clearing location from {0} of {1} files", i, selectedFiles.Count);
-                }),
+                selectedFiles,
                 () => BeginInvokeOnMainThread( delegate 
-                { 
+                {
+                    foreach (var f in selectedFiles)
+                    {
+                        var imageItem = ImageItemFromPath(f);
+                        if (imageItem != null)
+                        {
+                            imageItem.UpdateLocation(null);
+                        }
+                    }
+
                     SetStatusText("Finished clearing location from {0} files", selectedFiles.Count);
                     imageView.ReloadData();
                 })));
