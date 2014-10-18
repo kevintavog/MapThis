@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
@@ -146,6 +146,19 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="1UT-gP-svv"/>
+                            <menuItem title="Select Files without Locations" keyEquivalent="l" id="5LW-nM-Lpr">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="selectFilesWithoutLocations:" target="-1" id="tl8-GJ-epB"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select Files without Keywords" keyEquivalent="k" id="LK7-H4-jCc">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="selectFilesWithoutKeywords:" target="-1" id="Xtj-gb-P9u"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="i1Y-XS-aZF"/>
                             <menuItem title="Find" id="yzS-16-epv">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Find" id="TR8-5B-PdX">
@@ -320,12 +333,6 @@
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
-                            <menuItem title="Select All Files" keyEquivalent="a" id="fm9-xd-ihp">
-                                <connections>
-                                    <action selector="selectAllFiles:" target="-1" id="b5H-JN-8Lx"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="jFu-ea-IPV"/>
                             <menuItem title="Images" keyEquivalent="i" id="yZb-ul-2Fr">
                                 <connections>
                                     <action selector="showImages:" target="-1" id="2kj-nO-kNJ"/>

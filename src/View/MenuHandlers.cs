@@ -164,6 +164,44 @@ namespace MapThis.View
 			}
 		}
 
+        [Export("selectFilesWithoutKeywords:")]
+        public void SelectFilesWithoutKeywords(NSObject sender)
+        {
+            var items = SelectItems( (item) => !item.HasKeywords );
+            if (items.Length > 0)
+            {
+                imageView.ScrollIndexToVisible((int) items[0]);
+            }
+        }
+
+        [Export("selectFilesWithoutLocations:")]
+        public void SelectFilesWithoutLocations(NSObject sender)
+        {
+            logger.Info("Select files without locations");
+            var items = SelectItems( (item) => !item.HasGps );
+            if (items.Length > 0)
+            {
+                imageView.ScrollIndexToVisible((int) items[0]);
+            }
+        }
+
+        private uint[] SelectItems(Func<ImageViewItem,bool> isSelected)
+        {
+            var set = new NSMutableIndexSet();
+            imageView.SelectItemsAt(set, false);
+
+            for (int idx = 0; idx < imageViewItems.Count; ++idx)
+            {
+                var item = imageViewItems[idx];
+                if (isSelected(item))
+                    set.Add((uint) idx);
+            }
+
+            imageView.SelectItemsAt(set, false);
+
+            return set.Count == 0 ? new uint[0] : set.ToArray();
+        }
+
 		public bool OpenFolderDirectly(string path)
 		{
 			directoryTree = new DirectoryTree(path);

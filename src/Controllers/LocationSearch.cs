@@ -65,7 +65,7 @@ namespace MapThis.Controllers
 				{
 					int limit = search.Length > 3 ? 20 : 5;
 					var requestUrl = string.Format(
-						"nominatim/v1/search?q={0}&format=jsonv2&polygon=0&addressdetails=1&dedup=1&limit={1}",
+                        "nominatim/v1/search?q={0}&format=jsonv2&polygon=0&addressdetails=1&dedup=1&limit={1}&accept-language=en-us",
 						search.Replace(' ', '+'),
 						limit);
 

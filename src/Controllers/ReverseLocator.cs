@@ -25,7 +25,7 @@ namespace MapThis.Controllers
 				using (var client = new HttpClient())
 				{
 					var requestUrl = string.Format(
-						"nominatim/v1/reverse?format=json&lat={0}&lon={1}&addressdetails=1&zoom=18",
+                        "nominatim/v1/reverse?format=json&lat={0}&lon={1}&addressdetails=1&zoom=18&accept-language=en-us",
 						latitude,
 						longitude);
 
