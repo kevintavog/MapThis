@@ -11,6 +11,7 @@ using MapThis.Models;
 using MonoMac.ImageKit;
 using System.Threading.Tasks;
 using System.IO;
+using Rangic.Utilities.Geo;
 
 namespace MapThis.View
 {
@@ -217,7 +218,7 @@ namespace MapThis.View
 
             var location = new Location(latitude, longitude);
             if (updateStatusText)
-                SetStatusText("Updating {0} file(s) to {1}", pathList.Count, location.ToDmsString());
+                SetStatusText("Updating {0} file(s) to {1}", pathList.Count, location.ToDms());
 
             Task.Run( () => GeoUpdater.UpdateFiles(
                 pathList, 
@@ -236,7 +237,7 @@ namespace MapThis.View
 
                     if (updateStatusText)
                     {
-                        SetStatusText("Finished updating {0} files to {1}", pathList.Count, location.ToDmsString());
+                        SetStatusText("Finished updating {0} files to {1}", pathList.Count, location.ToDms());
                     }
                     imageView.ReloadData();
                 })));

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using NLog;
 using Newtonsoft.Json.Linq;
-using MapThis.Utilities;
+using Rangic.Utilities.Process;
 
 namespace MapThis
 {
@@ -190,7 +190,7 @@ namespace MapThis
 					removeCommand.AppendFormat("\"-IPTC:Keywords-={0}\" \"-XMP:Subject-={0}\" ", s);
 				}
 
-				ExifToolInvoker.Run("-P -overwrite_original {0} {1} {2}", addCommand, removeCommand, quotedFilenames);
+                new ExifToolInvoker().Run("-P -overwrite_original {0} {1} {2}", addCommand, removeCommand, quotedFilenames);
 				return true;
 			}
 			catch (Exception e)

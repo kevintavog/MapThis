@@ -5,6 +5,7 @@ using MonoMac.ObjCRuntime;
 using NLog;
 using MonoMac.WebKit;
 using MapThis.Models;
+using Rangic.Utilities.Geo;
 
 namespace MapThis.View
 {
@@ -20,12 +21,12 @@ namespace MapThis.View
 		public void clicked(NSNumber lat, NSNumber lng)
 		{
             var location = new Location(lat.DoubleValue, lng.DoubleValue);
-            var message = string.Format("Looking up {0}...", location.ToDmsString()).Replace("\"", "\\\"");
+            var message = string.Format("Looking up {0}...", location.ToDms()).Replace("\"", "\\\"");
             MapWebView.InvokeMapScript("setPopup([{0}, {1}], \"{2}\")", lat, lng, message);
 
 			MapController.NameFromLocation(
                 location,
-				ReverseLocator.Filter.Minimal,
+                Location.PlaceNameFilter.Minimal,
 				(s) => 
 			{
 				BeginInvokeOnMainThread(delegate 

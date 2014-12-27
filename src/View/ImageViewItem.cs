@@ -3,11 +3,13 @@ using System.IO;
 using System.Linq;
 using MonoMac.Foundation;
 using MonoMac.ImageKit;
-using MapThis.Utilities;
 using MapThis.Models;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using NLog;
+using Rangic.Utilities;
+using Rangic.Utilities.Image;
+using Rangic.Utilities.Geo;
 
 namespace MapThis.View
 {
@@ -33,7 +35,7 @@ namespace MapThis.View
         public void UpdateLocation(Location newLocation)
         {
             Location = newLocation;
-            _gpsCoordinates = Location == null ? "" : Location.ToDmsString();
+            _gpsCoordinates = Location == null ? "" : Location.ToDms();
         }
 
 		public override string ImageUID { get { return Url.Path; } }
@@ -72,7 +74,7 @@ namespace MapThis.View
 					Location = ImageDetails.Location;
 					if (Location != null)
 					{
-                        _gpsCoordinates = Location.ToDmsString();
+                        _gpsCoordinates = Location.ToDms();
 					}
 					else
 					{

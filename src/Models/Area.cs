@@ -1,4 +1,5 @@
 ﻿using System;
+using Rangic.Utilities.Geo;
 
 namespace MapThis.Models
 {

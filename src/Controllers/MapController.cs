@@ -2,6 +2,7 @@
 using MapThis.Models;
 using NLog;
 using System.Threading.Tasks;
+using Rangic.Utilities.Geo;
 
 namespace MapThis.Controllers
 {
@@ -34,16 +35,16 @@ namespace MapThis.Controllers
 			}
 		}
 
-        static public void NameFromLocation(Location location, ReverseLocator.Filter filter, Action<string> action)
+        static public void NameFromLocation(Location location, Location.PlaceNameFilter filter, Action<string> action)
         {
             NameFromLocation(location.Latitude, location.Longitude, filter, action);
         }
 
-		static public void NameFromLocation(double latitude, double longitude, ReverseLocator.Filter filter, Action<string> action)
+        static public void NameFromLocation(double latitude, double longitude, Location.PlaceNameFilter filter, Action<string> action)
 		{
 			Task.Run( delegate ()
 				{
-					string name = ReverseLocator.ToPlaceName(latitude, longitude, filter);
+                    string name = new Location(latitude, longitude).PlaceName(filter);
 					action(name);
 				});
 
