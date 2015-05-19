@@ -3,11 +3,7 @@ using System.IO;
 using System.Linq;
 using MonoMac.Foundation;
 using MonoMac.ImageKit;
-using MapThis.Models;
-using System.Collections.Specialized;
 using System.Collections.Generic;
-using NLog;
-using Rangic.Utilities;
 using Rangic.Utilities.Image;
 using Rangic.Utilities.Geo;
 

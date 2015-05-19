@@ -55,6 +55,19 @@ namespace MapThis.Controllers
             }
         }
 
+        static public void FixBadExif(IList<string> filePaths, Action operationCompleted)
+        {
+            CheckFiles(filePaths);
+
+            var quotedFilenames = "\"" + String.Join("\" \"", filePaths) + "\"";
+            RunExifTool(
+                "-all= -tagsfromfile @ -all:all -unsafe -icc_profile {0}",
+                quotedFilenames);
+
+            if (operationCompleted != null)
+                operationCompleted();
+        }
+
 		static public bool CheckExifTool()
 		{
 			if (!File.Exists(GetExifPath()))

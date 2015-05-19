@@ -59,6 +59,32 @@ namespace MapThis.View
                 })));
         }
 
+        [Export("fixBadExif:")]
+        public void FixBadExif(NSObject sender)
+        {
+            var selectedFiles = new List<string>();
+            if (imageView.SelectionIndexes.Count > 0)
+            {
+                foreach (var index in imageView.SelectionIndexes.ToArray())
+                {
+                    selectedFiles.Add(ImageAtIndex(index).File);
+                }
+            }
+
+            if (selectedFiles.Count < 1)
+                return;
+
+            SetStatusText("Fixing bad EXIF for {0} file(s)", selectedFiles.Count);
+
+            Task.Run( () => GeoUpdater.FixBadExif(
+                selectedFiles,
+                () => BeginInvokeOnMainThread( delegate 
+                {
+                    SetStatusText("Finished fixing bad EXIF for {0} files", selectedFiles.Count);
+                    imageView.ReloadData();
+                })));
+        }
+
 		[Export("showImages:")]
 		public void ShowImages(NSObject sender)
 		{

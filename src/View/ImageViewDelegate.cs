@@ -5,7 +5,6 @@ using System.IO;
 using System.Collections.Generic;
 using MonoMac.AppKit;
 using System.Drawing;
-using System.Collections.Specialized;
 using System.Linq;
 
 namespace MapThis.View
