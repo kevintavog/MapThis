@@ -87,7 +87,7 @@ namespace MapThis
 			}
 			catch (Exception e)
 			{
-				logger.Error("Error getting keywords: {0}", e);
+                logger.Error("Error getting keywords: {0}", e.ToString());
 				return e.Message;
 			}
 			finally
@@ -195,7 +195,7 @@ namespace MapThis
 			}
 			catch (Exception e)
 			{
-				logger.Error("Error saving keywords: {0}", e);
+                logger.Error("Error saving keywords: {0}", e.ToString());
 				message = e.Message;
 				return false;
 			}

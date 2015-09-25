@@ -2,9 +2,7 @@
 using MonoMac.Foundation;
 using MapThis.Controllers;
 using MonoMac.ObjCRuntime;
-using NLog;
 using MonoMac.WebKit;
-using MapThis.Models;
 using Rangic.Utilities.Geo;
 
 namespace MapThis.View

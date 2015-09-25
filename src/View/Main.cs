@@ -1,8 +1,4 @@
-﻿using System;
-using System.Drawing;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
+﻿using MonoMac.AppKit;
 using System.Threading;
 
 namespace MapThis.View

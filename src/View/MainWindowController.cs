@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MonoMac.Foundation;
 using MonoMac.AppKit;
-using MonoMac.WebKit;
 using NLog;
-using MonoMac.ObjCRuntime;
 using MapThis.Controllers;
 using MapThis.Models;
 using MonoMac.ImageKit;

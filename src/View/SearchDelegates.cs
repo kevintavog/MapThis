@@ -1,7 +1,6 @@
 ﻿using System;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-using NLog;
 using System.Collections.Generic;
 using MapThis.Models;
 

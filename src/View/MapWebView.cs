@@ -5,7 +5,6 @@ using NLog;
 using MonoMac.AppKit;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
-using MapThis.Controllers;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;

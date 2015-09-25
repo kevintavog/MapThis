@@ -2,8 +2,6 @@
 using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MapThis.Models;
-using System.IO;
-using MonoMac.ImageIO;
 using System.Collections.Generic;
 
 namespace MapThis.View

@@ -82,7 +82,7 @@ namespace MapThis
 			}
 			catch (Exception e)
 			{
-				logger.Info("Error saving keywords: {0}", e);
+                logger.Info("Error saving keywords: {0}", e.ToString());
 			}
 		}
 

@@ -1,6 +1,4 @@
-﻿using System;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
+﻿using MonoMac.Foundation;
 using System.Collections.Generic;
 using MonoMac.ImageIO;
 

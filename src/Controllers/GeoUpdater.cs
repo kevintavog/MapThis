@@ -83,7 +83,7 @@ namespace MapThis.Controllers
 			}
 			catch (Exception e)
 			{
-				logger.Warn("Unable to invoke exif tool: {0}", e);
+                logger.Warn("Unable to invoke exif tool: {0}", e.ToString());
 				return false;
 			}
 		}

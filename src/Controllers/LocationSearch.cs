@@ -110,7 +110,7 @@ namespace MapThis.Controllers
 			}
 			catch (Exception e)
 			{
-				logger.Warn("Exception searching: {0}", e);
+                logger.Warn("Exception searching: {0}", e.ToString());
 			}
 
 			return areas;

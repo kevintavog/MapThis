@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>MapThis</string>
+	<string>MapThis.net</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.rangic.MapThis</string>
 	<key>CFBundleName</key>

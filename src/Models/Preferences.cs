@@ -16,6 +16,7 @@ namespace MapThis
 		public string LastOpenedFolder { get; set; }
 		public string LastSelectedFolder { get; set; }
 		public int ImageFilterIndex { get; set; }
+        public string BaseLocationLookup { get; set; }
 
 
 		// Properties derived from other properties
@@ -43,10 +44,11 @@ namespace MapThis
 					Instance.LastOpenedFolder = json.LastOpenedFolder;
 					Instance.LastSelectedFolder = json.LastSelectedFolder;
 					Instance.ImageFilterIndex = json.ImageFilterIndex;
+                    Instance.BaseLocationLookup = json.BaseLocationLookup;
 				}
 				catch (Exception e)
 				{
-					logger.Error("Exception loading preferences (using defaults): {0}", e);
+                    logger.Error("Exception loading preferences (using defaults): {0}", e.ToString());
 				}
 			}
 			else
@@ -70,6 +72,7 @@ namespace MapThis
 				Instance.LastOpenedFolder,
 				Instance.LastSelectedFolder,
 				Instance.ImageFilterIndex,
+                Instance.BaseLocationLookup
 			};
 
 			File.WriteAllText(filename, JsonConvert.SerializeObject(prefs));
