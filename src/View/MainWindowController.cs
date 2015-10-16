@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using NLog;
+using System.IO;
+using System.Threading.Tasks;
 using MapThis.Controllers;
 using MapThis.Models;
+using MonoMac.AppKit;
+using MonoMac.Foundation;
 using MonoMac.ImageKit;
-using System.Threading.Tasks;
-using System.IO;
+using NLog;
 using Rangic.Utilities.Geo;
 
 namespace MapThis.View
 {
-	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+	public partial class MainWindowController
 	{
 		static private readonly Logger logger = LogManager.GetCurrentClassLogger();
 		private LocationSearch locationSearch;
@@ -217,8 +217,13 @@ namespace MapThis.View
             if (updateStatusText)
                 SetStatusText("Updating {0} file(s) to {1}", pathList.Count, location.ToDms());
 
+            var imagePathList = new List<string>();
+            var videoPathList = new List<string>();
+            SeparateVideoList(pathList, imagePathList, videoPathList);
+
             Task.Run( () => GeoUpdater.UpdateFiles(
-                pathList, 
+                imagePathList,
+                videoPathList,
                 latitude, 
                 longitude,
                 () => BeginInvokeOnMainThread( delegate 
@@ -270,6 +275,39 @@ namespace MapThis.View
 		{
 			SetTableColumns();
 		}
+
+        private void SeparateVideoList(IList<string> fileList, IList<string> imagePathList, IList<string> videoPathList)
+        {
+            // Separate into images & videos
+            foreach (var file in fileList)
+            {
+                var isVideo = IsVideo(file);
+                if (!isVideo.HasValue)
+                {
+                    logger.Info("Can't find file in ImageViewList, skipping: {0}", file);
+                }
+                else
+                {
+                    if (isVideo.Value)
+                        videoPathList.Add(file);
+                    else
+                        imagePathList.Add(file);
+                }
+            }
+        }
+
+        private bool? IsVideo(string pathToFile)
+        {
+            foreach (var imageItem in imageViewItems)
+            {
+                if (pathToFile == imageItem.File)
+                {
+                    return imageItem.IsVideo;
+                }
+            }
+
+            return null;
+        }
 
 		private class SplitViewDelegate : NSSplitViewDelegate
 		{

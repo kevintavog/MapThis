@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using NLog;
-using Newtonsoft.Json.Linq;
 using Rangic.Utilities.Process;
 
 namespace MapThis

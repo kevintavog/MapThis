@@ -6,9 +6,11 @@ namespace MapThis.View
 {
 	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
 	{
-		private ImageFilter[] imageFilters = new []
-		{
-			new ImageFilter("JPEG & PNG", new HashSet<string>() { "public.jpeg", "public.png" }),
+        private string[] videoTypes = { "public.mpeg-4" };
+        
+		private ImageFilter[] imageFilters =
+        {
+            new ImageFilter("JPEG & PNG", new HashSet<string>() { "public.jpeg", "public.png", "public.mpeg-4" }),
 			new ImageFilter("All images", new HashSet<string>(CGImageSource.TypeIdentifiers))
 		};
 

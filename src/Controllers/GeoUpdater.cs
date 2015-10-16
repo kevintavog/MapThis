@@ -14,25 +14,49 @@ namespace MapThis.Controllers
 		static private bool autoCheckExifTool = true;
 
 		static public void UpdateFiles(
-			IList<string> filePaths,
+            IList<string> imageFilePaths, IList<string> videoFilePaths,
 			double latitude, double longitude,
 			Action operationCompleted)
 		{
-            CheckFiles(filePaths);
+            CheckFiles(imageFilePaths);
+            CheckFiles(videoFilePaths);
 
-            var latRef = latitude < 0 ? "S" : "N";
-            var longRef = longitude < 0 ? "W" : "E";
-            var normLat = Math.Abs(latitude);
-            var normlLong = Math.Abs(longitude);
+            if (imageFilePaths.Count > 0)
+            {
+                var latRef = latitude < 0 ? "S" : "N";
+                var longRef = longitude < 0 ? "W" : "E";
+                var absLat = Math.Abs(latitude);
+                var absLong = Math.Abs(longitude);
 
-            var quotedFilenames = "\"" + String.Join("\" \"", filePaths) + "\"";
-            RunExifTool(
-                "-P -fast -q -overwrite_original -exif:gpslatitude={0} -exif:gpslatituderef={1} -exif:gpslongitude={2} -exif:gpslongituderef={3} {4}",
-                normLat, 
-                latRef, 
-                normlLong, 
-                longRef, 
-                quotedFilenames);
+                var quotedFilenames = "\"" + String.Join("\" \"", imageFilePaths) + "\"";
+                RunExifTool(
+                    "-P -fast -q -overwrite_original -exif:gpslatitude={0} -exif:gpslatituderef={1} -exif:gpslongitude={2} -exif:gpslongituderef={3} {4}",
+                    absLat, 
+                    latRef, 
+                    absLong, 
+                    longRef, 
+                    quotedFilenames);
+            }
+
+            if (videoFilePaths.Count > 0)
+            {
+                var latRef = latitude < 0 ? "S" : "N";
+                latitude = Math.Abs(latitude);
+                var latDegrees = (int) latitude;
+                var latMinutesAndSeconds = (latitude - (Double) latDegrees) * 60.0;
+
+                var lonRef = longitude < 0 ? "W" : "E";
+                longitude = Math.Abs(longitude);
+                var lonDegrees = (int) longitude;
+                var lonMinutesAndSeconds = (longitude - (Double) lonDegrees) * 60.0;
+
+                var quotedFilenames = "\"" + String.Join("\" \"", videoFilePaths) + "\"";
+                RunExifTool(
+                    "-P -fast -q -overwrite_original -xmp:gpslatitude={0} -xmp:gpslongitude={1} {2}",
+                    String.Format("{0},{1}{2}", latDegrees, latMinutesAndSeconds, latRef),
+                    String.Format("{0},{1}{2}", lonDegrees, lonMinutesAndSeconds, lonRef), 
+                    quotedFilenames);
+            }
 
             if (operationCompleted != null)
             {
@@ -40,14 +64,26 @@ namespace MapThis.Controllers
             }
 		}
 
-        static public void ClearLocation(IList<string> filePaths, Action operationCompleted)
+        static public void ClearLocation(IList<string> imageFilePaths, IList<string> videoFilePaths, Action operationCompleted)
         {
-            CheckFiles(filePaths);
+            CheckFiles(imageFilePaths);
+            CheckFiles(videoFilePaths);
 
-            var quotedFilenames = "\"" + String.Join("\" \"", filePaths) + "\"";
-            RunExifTool(
-                "-P -fast -q -overwrite_original -exif:gpslatitude= -exif:gpslatituderef= -exif:gpslongitude= -exif:gpslongituderef= {0}",
-                quotedFilenames);
+            if (imageFilePaths.Count > 0)
+            {
+                var quotedFilenames = "\"" + String.Join("\" \"", imageFilePaths) + "\"";
+                RunExifTool(
+                    "-P -fast -q -overwrite_original -exif:gpslatitude= -exif:gpslatituderef= -exif:gpslongitude= -exif:gpslongituderef= {0}",
+                    quotedFilenames);
+            }
+
+            if (videoFilePaths.Count > 0)
+            {
+                var quotedFilenames = "\"" + String.Join("\" \"", videoFilePaths) + "\"";
+                RunExifTool(
+                    "-P -fast -q -overwrite_original -xmp:gpslatitude= -xmp:gpslongitude= {0}",
+                    quotedFilenames);
+            }
 
             if (operationCompleted != null)
             {

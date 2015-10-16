@@ -3,10 +3,11 @@ using MonoMac.Foundation;
 using MonoMac.AppKit;
 using MapThis.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MapThis.View
 {
-	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+	public partial class MainWindowController : NSWindowController
 	{
 		private HashSet<string> imageTypes = new HashSet<string>();
 
@@ -31,7 +32,7 @@ namespace MapThis.View
 				var fileType = NSWorkspace.SharedWorkspace.TypeOfFile(f.Path, out error);
 				if (imageTypes.Contains(fileType))
 				{
-                    var item = new ImageViewItem(f.Path);
+                    var item = new ImageViewItem(f.Path, videoTypes.Contains(fileType));
 					int pos = imageViewItems.BinarySearch(item);
 					if (pos < 0)
 					{

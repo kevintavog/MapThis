@@ -1,6 +1,5 @@
 ﻿using System;
 using MapThis.Models;
-using NLog;
 using System.Threading.Tasks;
 using Rangic.Utilities.Geo;
 

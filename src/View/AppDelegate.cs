@@ -10,9 +10,6 @@ namespace MapThis.View
         static private readonly Logger logger = LogManager.GetCurrentClassLogger();
 		MainWindowController mainWindowController;
 
-		public AppDelegate()
-		{
-		}
 
 		public override void FinishedLaunching(NSObject notification)
 		{

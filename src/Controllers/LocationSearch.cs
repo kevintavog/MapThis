@@ -2,7 +2,6 @@
 using NLog;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using MapThis.Models;
 using System.Threading.Tasks;

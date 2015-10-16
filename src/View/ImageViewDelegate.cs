@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace MapThis.View
 {
-	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+	public partial class MainWindowController
 	{
 		private void ImageFilesUpdated(IEnumerable<string> filenames)
 		{

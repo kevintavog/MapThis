@@ -6,7 +6,7 @@ using MapThis.Models;
 
 namespace MapThis.View
 {
-	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+	public partial class MainWindowController 
 	{
 		private void MoveSearchResult(bool up)
 		{

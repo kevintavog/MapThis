@@ -81,7 +81,7 @@
       <HintPath>ExternalDependencies\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="RangicUtilities">
-      <HintPath>packages\Rangic.Utilities.1.0.0.19\lib\net45\RangicUtilities.dll</HintPath>
+      <HintPath>packages\Rangic.Utilities.1.0.0.21\lib\net45\RangicUtilities.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

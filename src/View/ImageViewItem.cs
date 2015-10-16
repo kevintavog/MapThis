@@ -13,11 +13,14 @@ namespace MapThis.View
 	{
 		public string File { get; private set; }
 		private NSUrl Url { get; set; }
+        public bool IsVideo { get; private set; }
 
-		public ImageViewItem(string file)
+        public ImageViewItem(string file, bool isVideo)
 		{
 			File = file;
 			Url = new NSUrl(File, false);
+
+            IsVideo = isVideo;
 		}
 
 		public void UpdateKeywords()
@@ -35,7 +38,7 @@ namespace MapThis.View
         }
 
 		public override string ImageUID { get { return Url.Path; } }
-		public override NSString ImageRepresentationType { get { return IKImageBrowserItem.PathRepresentationType; } }
+        public override NSString ImageRepresentationType { get { return IsVideo ? IKImageBrowserItem.QTMoviePathRepresentationType : IKImageBrowserItem.PathRepresentationType; } }
 		public override NSObject ImageRepresentation { get { return Url; } }
 		public override string ImageTitle { get { return String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(File), AbbreviatedKeywords); } }
 		public override string ImageSubtitle { get { return HasGps ? GpsCoordinates : "<>"; } }

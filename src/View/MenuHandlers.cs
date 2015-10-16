@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MapThis.View
 {
-	public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+	public partial class MainWindowController
 	{
 		[Export("showKeywords:")]
 		public void ShowKeywords(NSObject sender)
@@ -41,8 +41,13 @@ namespace MapThis.View
 
             SetStatusText("Clearing location from {0} file(s)", selectedFiles.Count);
 
+            var imagePathList = new List<string>();
+            var videoPathList = new List<string>();
+            SeparateVideoList(selectedFiles, imagePathList, videoPathList);
+
             Task.Run( () => GeoUpdater.ClearLocation(
-                selectedFiles,
+                imagePathList,
+                videoPathList,
                 () => BeginInvokeOnMainThread( delegate 
                 {
                     foreach (var f in selectedFiles)
